@@ -1,108 +1,106 @@
 import streamlit as st
 
-# ----- Page config -----
 st.set_page_config(page_title="HR Agent", page_icon="🤖", layout="centered")
 
-# ----- Global styles -----
-st.markdown(
-    """
-    <style>
-      /* Full gradient background for entire page */
-      .stApp {
-        background: linear-gradient(135deg, #612C53 0%, #24E0BB 100%) fixed;
-      }
+# ===================== STYLES =====================
+st.markdown("""
+<style>
+/* Full-page gradient */
+html, body, .stApp, [data-testid="stAppViewContainer"] {
+  background: linear-gradient(135deg, #612C53 0%, #24E0BB 100%) !important;
+  min-height: 100%;
+  color: #fff !important;
+}
 
-      /* White card container for chat */
-      .chat-card {
-        background: #FFFFFF;
-        border-radius: 22px;
-        box-shadow: 0 10px 35px rgba(0,0,0,0.2);
-        padding: 3rem 2.5rem 2rem 2.5rem;
-        max-width: 900px;
-        margin: 4rem auto 5rem auto;
-        min-height: 70vh;  /* ensure it feels tall enough */
-        display: flex;
-        flex-direction: column;
-        justify-content: space-between;
-      }
+/* Transparent Streamlit chrome */
+[data-testid="stHeader"], footer, [data-testid="stToolbar"], [data-testid="stBottomBar"] {
+  background: transparent !important;
+  box-shadow: none !important;
+  border: none !important;
+  color: #fff !important;
+}
 
-      /* Chat message bubbles */
-      [data-testid="stChatMessage"] {
-        border-radius: 12px;
-      }
+/* Content area (reserve space bottom for chat input + footer) */
+.block-container {
+  background: transparent !important;
+  max-width: 900px;
+  margin: 5rem auto 0 auto !important;
+  padding: 0 1rem !important;
+}
+.block-container::after { content:""; display:block; height: 9.5rem; } /* keep last messages visible */
 
-      /* Title styling */
-      .page-title {
-        text-align: center;
-        color: white;
-        margin-top: 3rem;
-        font-size: 2.2rem;
-        font-weight: 600;
-      }
+/* Footer that sits just above the input */
+.page-footer {
+  opacity: .85;
+  text-align: center;
+  margin: 1rem 0 0 0;
+  font-size: 0.9rem;
+}
 
-      /* Footer styling */
-      .app-footer {
-        text-align: center;
-        color: rgba(255,255,255,0.85);
-        font-size: 0.9rem;
-        margin-bottom: 2rem;
-      }
+/* ===================== INPUT FIELD ===================== */
+/* container */
+[data-testid="stChatInput"] {
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
 
-      /* Mobile responsiveness */
-      @media (max-width: 640px) {
-        .chat-card {
-          margin: 2rem auto;
-          padding: 1.5rem 1.25rem;
-          min-height: 80vh;
-        }
-        .page-title {
-          font-size: 1.7rem;
-        }
-      }
-    </style>
-    """,
-    unsafe_allow_html=True,
-)
+/* inner textarea wrapper */
+[data-testid="stChatInput"] textarea {
+  background: rgba(0,0,0,0.45) !important;
 
-# ----- Header -----
-st.markdown("<h2 class='page-title'>🤖 HR Agent</h2>", unsafe_allow_html=True)
+  border-radius: 22px !important;
+  color: #fff !important;
+  padding: 0.9rem 1.1rem !important;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.22);
 
-# ----- White card wrapper -----
-with st.container():
-    st.markdown("<div class='chat-card'>", unsafe_allow_html=True)
+}
 
-    # ----- Session state -----
-    if "messages" not in st.session_state:
-        st.session_state.messages = [
-            {"role": "assistant", "content": "Hi! I'm your personal HR assistant, how can I help you today?"}
-        ]
+/* placeholder color */
+[data-testid="stChatInput"] textarea::placeholder {
+  color: rgba(255,255,255,0.85);
+}
 
-    # ----- Dummy backend -----
-    def ask_hr_agent(user_text: str) -> str:
-        return f"I received: “{user_text}”. (Backend integration coming soon!)"
+/* send button icon area */
+[data-testid="stChatInput"] button {
+  border-radius: 999px !important;
+  border: 1px solid rgba(255,255,255,0.35) !important;
+  background: rgba(0,0,0,0.45) !important;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.22);
+}
 
-    # ----- Chat messages -----
-    for msg in st.session_state.messages:
-        with st.chat_message(msg["role"]):
-            st.write(msg["content"])
+</style>
+""", unsafe_allow_html=True)
 
-    # ----- Input (inside the white card now) -----
-    user_text = st.chat_input("Ask Anything...")
+# ===================== HEADER =====================
+st.markdown("<h2 style='text-align:center; margin:0;'>HR Agent</h2>", unsafe_allow_html=True)
 
-    if user_text:
-        st.session_state.messages.append({"role": "user", "content": user_text})
-        with st.chat_message("user"):
-            st.write(user_text)
+# ===================== STATE =====================
+if "messages" not in st.session_state:
+    st.session_state.messages = [
+        {"role": "assistant", "content": "Hi! I'm your personal HR assistant — how can I help you today?"}
+    ]
 
-        reply = ask_hr_agent(user_text)
-        st.session_state.messages.append({"role": "assistant", "content": reply})
-        with st.chat_message("assistant"):
-            st.write(reply)
+def ask_hr_agent(user_text: str) -> str:
+    # TODO: replace with your backend call
+    return f"I received: “{user_text}”. ( Backend integration here later :) )"
 
-    st.markdown("</div>", unsafe_allow_html=True)
+# ===================== CHAT HISTORY =====================
+for msg in st.session_state.messages:
+    with st.chat_message(msg["role"]):
+        st.write(msg["content"])
 
-# ----- Footer -----
-st.markdown(
-    "<div class='app-footer'>Demo UI • Made with ❤️</div>",
-    unsafe_allow_html=True,
-)
+# ===================== FOOTER (above the input) =====================
+st.markdown("<div class='page-footer'>Demo UI • Made with Love ❤️</div>", unsafe_allow_html=True)
+
+# ===================== INPUT =====================
+prompt = st.chat_input(placeholder="Ask Anything..")
+
+# ===================== HANDLE SUBMIT =====================
+if prompt and prompt.strip():
+    # Update state first
+    st.session_state.messages.append({"role": "user", "content": prompt})
+    reply = ask_hr_agent(prompt)
+    st.session_state.messages.append({"role": "assistant", "content": reply})
+    # Rerun so new messages render in the history above the footer/input (not below)
+    st.rerun()

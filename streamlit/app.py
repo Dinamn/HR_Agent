@@ -103,6 +103,6 @@ with st.container():
 
 # ----- Footer -----
 st.markdown(
-    "<div class='app-footer'>Demo UI • Made with ❤️ using Streamlit</div>",
+    "<div class='app-footer'>Demo UI • Made with ❤️</div>",
     unsafe_allow_html=True,
 )

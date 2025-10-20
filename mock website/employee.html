@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Tahakom HR – Employee Information</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+<header class="site-header">
+  <div class="brand">
+    <img src="tahakom-logo.png" alt="Tahakom logo" class="logo" />
+    <span>TAHAKOM • HR Portal</span>
+  </div>
+  <nav class="top-nav">
+    <a class="nav-link" href="index.html">General Info</a>
+    <a class="nav-link active" href="employee.html">Employee Information</a>
+  </nav>
+</header>
+
+<nav class="top-tabs" aria-label="Employee navigation">
+  <ul class="tabs" id="tabsMain"></ul>
+
+  <div class="tabs-more" id="tabsMore" hidden>
+    <button class="more-btn" id="moreBtn" aria-haspopup="true" aria-expanded="false">
+      More ▾
+    </button>
+    <ul class="more-menu" id="moreMenu" role="menu"></ul>
+  </div>
+</nav>
+
+<script>
+  // --- Config: list all destinations here (order matters) ---
+  const TAB_ITEMS = [
+    {label:'Personal Information',     href:'#personal'},
+    {label:'Employment Information',   href:'#employment'},
+    {label:'Compensation Information', href:'#compensation'},
+    {label:'Payroll Information',      href:'#payroll'},
+    // Everything after the first 4 goes into the dropdown:
+    {label:'Submit Education/Certificates', href:'#submit-education'},
+    {label:'History',                     href:'#history'},
+    {label:'Time Management',             href:'#time-mgmt'},
+    {label:'Business Trip Request',       href:'#trip-request'},
+    {label:'Leave Request',               href:'#leave-request'},
+    {label:'Disciplinary Log Management', href:'#disciplinary'},
+    {label:'Work Injury',                 href:'#injury'},
+    {label:'Employee Badge',              href:'#badge'},
+    {label:'Chamber of Commerce Letter',  href:'#coc-letter'}
+  ];
+  const MAX_VISIBLE = 4; // how many to show as top tabs
+
+  const tabsMain = document.getElementById('tabsMain');
+  const tabsMore = document.getElementById('tabsMore');
+  const moreBtn  = document.getElementById('moreBtn');
+  const moreMenu = document.getElementById('moreMenu');
+
+  function buildTabs(){
+    tabsMain.innerHTML = '';
+    moreMenu.innerHTML = '';
+
+    const visible = TAB_ITEMS.slice(0, MAX_VISIBLE);
+    const hidden  = TAB_ITEMS.slice(MAX_VISIBLE);
+
+    visible.forEach(({label, href}, i) => {
+      const li = document.createElement('li');
+      const a  = document.createElement('a');
+      a.href = href; a.textContent = label;
+      li.appendChild(a);
+      // add separators like the screenshot
+      if (i < visible.length-1){
+        const sep = document.createElement('span');
+        sep.className = 'tab-sep'; sep.setAttribute('aria-hidden','true'); sep.textContent = '|';
+        li.appendChild(sep);
+      }
+      tabsMain.appendChild(li);
+    });
+
+    if (hidden.length){
+      tabsMore.hidden = false;
+      hidden.forEach(({label, href}) => {
+        const li = document.createElement('li');
+        li.role = 'menuitem';
+        const a  = document.createElement('a');
+        a.href = href; a.textContent = label;
+        li.appendChild(a);
+        moreMenu.appendChild(li);
+      });
+    } else {
+      tabsMore.hidden = true;
+    }
+    refreshActive();
+  }
+
+  function refreshActive(){
+    const current = location.hash || '#personal';
+    document.querySelectorAll('.top-tabs a').forEach(a => {
+      a.classList.toggle('is-active', a.getAttribute('href') === current);
+    });
+  }
+
+  // open/close dropdown
+  moreBtn.addEventListener('click', () => {
+    const open = moreMenu.classList.toggle('open');
+    moreBtn.setAttribute('aria-expanded', String(open));
+  });
+  // close dropdown when clicking a choice
+  moreMenu.addEventListener('click', (e) => {
+    const a = e.target.closest('a');
+    if (!a) return;
+    moreMenu.classList.remove('open');
+    moreBtn.setAttribute('aria-expanded', 'false');
+  });
+  // close on outside click / escape
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.tabs-more')){
+      moreMenu.classList.remove('open');
+      moreBtn.setAttribute('aria-expanded', 'false');
+    }
+  });
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape'){
+      moreMenu.classList.remove('open');
+      moreBtn.setAttribute('aria-expanded', 'false');
+    }
+  });
+
+  window.addEventListener('hashchange', refreshActive);
+  buildTabs();
+</script>
+
+<main class="container">
+  
+
+  <!-- PERSONAL INFO -->
+  <section id="personal" class="panel">
+    <h1 class="panel-title">Personal Information</h1>
+    <div class="two-col">
+      <div class="card">
+        <h3>Profile</h3>
+        <table class="data">
+          <tr><th>Employee ID</th><td>THK-003271</td></tr>
+          <tr><th>Full Name</th><td>Layla Al-Harbi</td></tr>
+          <tr><th>National ID</th><td>1023•••••908</td></tr>
+          <tr><th>Date of Birth</th><td>1992-04-12</td></tr>
+          <tr><th>Phone</th><td>+966 55 123 4567</td></tr>
+          <tr><th>Email</th><td>layla.alharbi@tahakom.example</td></tr>
+          <tr><th>Address</th><td>Al Olaya, Riyadh 12214</td></tr>
+          <tr><th>Emergency Contact</th><td>Omar Al-Harbi (+966 50 777 2222)</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Documents on File</h3>
+        <ul class="bullets">
+          <li>National ID (valid till 2029-06-30)</li>
+          <li>Passport (valid till 2027-12-15)</li>
+          <li>University Degree – B.Sc. Computer Science</li>
+          <li>Bank IBAN: SA03 8000 0000 1234 5678 9012</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- EMPLOYMENT INFO -->
+  <section id="employment" class="panel">
+    <h2>Employment Information</h2>
+    <div class="two-col">
+      <div class="card">
+        <h3>Role</h3>
+        <table class="data">
+          <tr><th>Title</th><td>Senior Data Analyst</td></tr>
+          <tr><th>Department</th><td>Urban Mobility Analytics</td></tr>
+          <tr><th>Manager</th><td>Faisal Al-Otaibi</td></tr>
+          <tr><th>Employment Type</th><td>Full-time</td></tr>
+          <tr><th>Start Date</th><td>2021-09-01</td></tr>
+          <tr><th>Status</th><td>Active</td></tr>
+          <tr><th>Work Location</th><td>Riyadh HQ (Hybrid)</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Assets</h3>
+        <ul class="bullets">
+          <li>Laptop: Dell Latitude 7440 (THK-A-1145)</li>
+          <li>Phone: iPhone 13 (THK-M-0832)</li>
+          <li>Badge: #B-2219 (Access: A/B/C)</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- COMPENSATION -->
+  <section id="compensation" class="panel">
+    <h2>Compensation Information</h2>
+    <div class="two-col">
+      <div class="card">
+        <h3>Base &amp; Add-ons</h3>
+        <table class="data">
+          <tr><th>Base Salary</th><td>SAR 22,500 / month</td></tr>
+          <tr><th>Housing Allowance</th><td>SAR 5,625 / month</td></tr>
+          <tr><th>Transport Allowance</th><td>SAR 1,125 / month</td></tr>
+          <tr><th>Bonus Target</th><td>10% (Annual)</td></tr>
+          <tr><th>Last Raise</th><td>2024-10-01 (5%)</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Benefits</h3>
+        <ul class="bullets">
+          <li>Medical: Class A — Employee + Family</li>
+          <li>Annual Leave: 30 days</li>
+          <li>Remote Work: 2 days/week</li>
+          <li>Education Assistance: up to SAR 10,000/year</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- PAYROLL -->
+  <section id="payroll" class="panel">
+    <h2>Payroll Information</h2>
+    <div class="two-col">
+      <div class="card">
+        <h3>Bank Details</h3>
+        <table class="data">
+          <tr><th>Bank</th><td>Al Rajhi Bank</td></tr>
+          <tr><th>Account Name</th><td>Layla Al-Harbi</td></tr>
+          <tr><th>IBAN</th><td>SA03 8000 0000 1234 5678 9012</td></tr>
+          <tr><th>Currency</th><td>SAR</td></tr>
+        </table>
+      </div>
+      <div class="card">
+        <h3>Recent Payslips</h3>
+        <table class="data">
+          <tr><th>Month</th><th>Gross</th><th>Deductions</th><th>Net</th></tr>
+          <tr><td>2025-08</td><td>SAR 29,250</td><td>SAR 1,950</td><td>SAR 27,300</td></tr>
+          <tr><td>2025-07</td><td>SAR 29,250</td><td>SAR 1,920</td><td>SAR 27,330</td></tr>
+          <tr><td>2025-06</td><td>SAR 29,250</td><td>SAR 1,940</td><td>SAR 27,310</td></tr>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- REQUEST CATALOG SECTIONS (anchors match ribbon links) -->
+  <section id="submit-education" class="panel">
+    <h2>Submit Education/Certificates</h2>
+    <p>Upload transcripts, diplomas, or professional certificates for HR verification.</p>
+    <form class="form">
+      <label>Certificate Name <input type="text" placeholder="e.g., PMP Certification" /></label>
+      <label>Issuer <input type="text" placeholder="PMI" /></label>
+      <label>Issue Date <input type="date" /></label>
+      <label>Attachment <input type="file" /></label>
+      <button type="button">Submit</button>
+    </form>
+  </section>
+
+  <section id="history" class="panel">
+    <h2>History</h2>
+    <ul class="timeline">
+      <li><span>2025-08-15</span> Badge access updated to Zone C.</li>
+      <li><span>2025-07-03</span> Completed “Advanced SQL” training.</li>
+      <li><span>2024-10-01</span> Annual raise processed (5%).</li>
+    </ul>
+  </section>
+
+  <section id="time-mgmt" class="panel">
+    <h2>Time Management</h2>
+    <table class="data">
+      <tr><th>Period</th><th>Attendance</th><th>Overtime</th><th>Leave</th></tr>
+      <tr><td>Aug 2025</td><td>97%</td><td>4h</td><td>Annual Leave 1d</td></tr>
+      <tr><td>Jul 2025</td><td>99%</td><td>0h</td><td>—</td></tr>
+    </table>
+  </section>
+
+  <section id="trip-request" class="panel">
+    <h2>Business Trip Request</h2>
+    <form class="form">
+      <label>Destination <input type="text" placeholder="Jeddah" /></label>
+      <label>Purpose <input type="text" placeholder="Smart mobility workshop" /></label>
+      <label>Start <input type="date" /></label>
+      <label>End <input type="date" /></label>
+      <label>Estimated Cost <input type="number" placeholder="SAR" /></label>
+      <button type="button">Request Approval</button>
+    </form>
+  </section>
+
+  <section id="leave-request" class="panel">
+    <h2>Leave Request</h2>
+    <form class="form">
+      <label>Start <input type="date" /></label>
+      <label>End <input type="date" /></label>
+      <label>Reason
+        <select>
+          <option>SickLeave</option>
+          <option>Annual</option>
+        </select>
+      </label>
+      <h3>Leave Balance Left: 12 Days</h3>
+      <button type="button">Request Leave</button>
+    </form>
+  </section>
+
+  <section id="disciplinary" class="panel">
+    <h2>Disciplinary Log Management</h2>
+    <details class="catalog-group" open>
+      <summary>Violation Statement</summary>
+      <p class="muted">No violations on record.</p>
+    </details>
+    <details class="catalog-group">
+      <summary>Disciplinary logs relating to working hours</summary>
+      <ul class="bullets">
+        <li>2023-11-12 – Late arrival (10 min) — verbal reminder.</li>
+      </ul>
+    </details>
+    <details class="catalog-group">
+      <summary>Disciplinary logs relating to organizing work at Company</summary>
+      <p class="muted">None.</p>
+    </details>
+    <details class="catalog-group">
+      <summary>Disciplinary logs relating to employee’s behavior</summary>
+      <p class="muted">None.</p>
+    </details>
+  </section>
+
+  <section id="untitled" class="panel">
+    <h2>Untitled</h2>
+    <p class="muted">Reserved for future requests or custom forms.</p>
+  </section>
+
+  <section id="injury" class="panel">
+    <h2>Work Injury Request</h2>
+    <form class="form">
+      <label>Date of Incident <input type="date" /></label>
+      <label>Location <input type="text" placeholder="Riyadh HQ – Parking Area" /></label>
+      <label>Description <textarea rows="4" placeholder="Brief description of the incident..."></textarea></label>
+      <label>Medical Report <input type="file" /></label>
+      <button type="button" class="danger">Report Incident</button>
+    </form>
+  </section>
+
+  <section id="badge" class="panel">
+    <h2>Update Employee Badge</h2>
+    <form class="form">
+      <label>Reason
+        <select>
+          <option>Lost</option>
+          <option>Damaged</option>
+          <option>Access Change</option>
+          <option>Name Change</option>
+        </select>
+      </label>
+      <label>Notes <textarea rows="3" placeholder="Any additional info..."></textarea></label>
+      <button type="button">Submit Badge Update</button>
+    </form>
+  </section>
+
+  <section id="coc-letter" class="panel">
+    <h2>Chamber of Commerce Letter Request</h2>
+    <form class="form">
+      <label>Recipient Company <input type="text" placeholder="Example Trading Co." /></label>
+      <label>Language
+        <select>
+          <option>Arabic</option>
+          <option>English</option>
+          <option>Bilingual</option>
+        </select>
+      </label>
+      <label>Purpose <input type="text" placeholder="Sponsorship / Visa / Tender ..." /></label>
+      <button type="button">Generate Request</button>
+    </form>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <small>© 2025 Tahakom · HR Portal</small>
+</footer>
+</body>
+</html>

@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Favourites</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body{
+      background:#fff; margin:0; font:16px/1.5 system-ui;
+      color:#2b2831; overflow:auto;
+    }
+    header{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:10px 16px; border-bottom:1px solid var(--border);
+      background:#fafafa; position:sticky; top:0;
+    }
+    h1{margin:0;font-size:20px;color:var(--brand-purple);}
+    .fav-search{margin:10px 16px;position:relative;}
+    .fav-search input{
+      width:100%;padding:8px 36px 8px 10px;border:1px solid var(--border);
+      border-radius:10px;
+    }
+    .fav-tabs{display:flex;gap:8px;padding:0 16px;margin-bottom:6px;}
+    .fav-tab{
+      border:1px solid var(--border);border-radius:8px;
+      background:#fff;padding:6px 12px;cursor:pointer;font-weight:600;
+    }
+    .fav-tab.is-active{border-color:var(--brand-teal);}
+    ul{list-style:none;margin:0;padding:0 16px;columns:2;column-gap:40px;}
+    li{display:flex;align-items:center;gap:8px;padding:6px 0;}
+    li a{text-decoration:none;color:var(--brand-purple);}
+    .fav-star{
+      cursor:pointer;border:none;background:none;font-size:18px;
+      color:#1c64d1;
+    }
+    .fav-star.on{color:#e6a400;}
+    footer{text-align:right;padding:10px 16px;border-top:1px solid var(--border);}
+    @media(max-width:700px){ul{columns:1;}}
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Favourites</h1>
+    <button onclick="window.close()">✕</button>
+  </header>
+
+  <div class="fav-search">
+    <input id="favSearch" type="search" placeholder="Search" />
+  </div>
+  <div> </div>
+  <div class="fav-tabs">
+    <button class="fav-tab is-active" data-tab="favs">Favourites</button>
+    <button class="fav-tab" data-tab="available">Available</button>
+  </div>
+
+  <ul id="favList"></ul>
+  <ul id="availList" hidden></ul>
+
+  <footer><button onclick="window.close()">Close</button></footer>
+
+  <script>
+    const SECTION_ITEMS = [
+      {label:'Personal Information',hash:'#personal'},
+      {label:'Employment Information',hash:'#employment'},
+      {label:'Compensation Information',hash:'#compensation'},
+      {label:'Payroll Information',hash:'#payroll'},
+      {label:'Submit Education/Certificates',hash:'#submit-education'},
+      {label:'History',hash:'#history'},
+      {label:'Time Management',hash:'#time-mgmt'},
+      {label:'Business Trip Request',hash:'#trip-request'},
+      {label:'Leave Request',hash:'#leave-request'},
+      {label:'Disciplinary Log Management',hash:'#disciplinary'},
+      {label:'Work Injury',hash:'#injury'},
+      {label:'Employee Badge',hash:'#badge'},
+      {label:'Chamber of Commerce Letter',hash:'#coc-letter'}
+    ];
+    const FAV_KEY='hr_portal_favs_v1';
+    const favList=document.getElementById('favList');
+    const availList=document.getElementById('availList');
+    const tabs=document.querySelectorAll('.fav-tab');
+    const search=document.getElementById('favSearch');
+
+    const load=()=>JSON.parse(localStorage.getItem(FAV_KEY)||'[]');
+    const save=f=>localStorage.setItem(FAV_KEY,JSON.stringify(f));
+    const isFav=h=>load().includes(h);
+    const star=h=>`<button class="fav-star ${isFav(h)?'on':''}" data-h="${h}">${isFav(h)?'★':'☆'}</button>`;
+    const li=(x)=>`<li>${star(x.hash)}<a href="employee.html${x.hash}" target="_blank">${x.label}</a></li>`;
+
+    function render(term=''){
+      term=term.toLowerCase();
+      const favs=load();
+      favList.innerHTML=favs.map(h=>SECTION_ITEMS.find(x=>x.hash===h))
+        .filter(Boolean).filter(x=>x.label.toLowerCase().includes(term))
+        .map(li).join('')||'<li>No favourites.</li>';
+      availList.innerHTML=SECTION_ITEMS.filter(x=>!favs.includes(x.hash))
+        .filter(x=>x.label.toLowerCase().includes(term))
+        .map(li).join('')||'<li>No available items.</li>';
+    }
+    render();
+
+    document.body.addEventListener('click',e=>{
+      const b=e.target.closest('.fav-star'); if(!b)return;
+      const h=b.dataset.h; const favs=load();
+      const i=favs.indexOf(h); i>=0?favs.splice(i,1):favs.push(h);
+      save(favs); render(search.value);
+    });
+
+    tabs.forEach(t=>t.onclick=()=>{
+      tabs.forEach(x=>x.classList.remove('is-active'));
+      t.classList.add('is-active');
+      const isFav=t.dataset.tab==='favs';
+      favList.hidden=!isFav; availList.hidden=isFav;
+    });
+
+    search.oninput=()=>render(search.value);
+  </script>
+</body>
+</html>

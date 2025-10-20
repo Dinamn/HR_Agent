@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>HR – Action</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .page-wrap{max-width:900px;margin:40px auto;padding:24px;background:#fff;border:1px solid var(--border);border-radius:14px;box-shadow:var(--shadow)}
+    .page-wrap h1{margin-top:0}
+    .form label{display:block;margin:10px 0 6px;font-weight:600}
+    .form input,.form textarea,.form select{width:100%;padding:10px;border:1px solid var(--border);border-radius:10px}
+    .form button{margin-top:14px;padding:10px 16px;border-radius:10px;border:1px solid var(--brand-teal);background:var(--brand-teal);color:#083b37;font-weight:700;cursor:pointer}
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <div class="brand">
+    <img src="tahakom-logo.png" alt="Tahakom logo" class="logo" />
+    <span>TAHAKOM • HR Portal</span>
+  </div>
+  <nav class="top-nav">
+    <a class="nav-link" href="index.html">Home</a>
+    <a class="nav-link" href="employee.html">Employee Information</a>
+  </nav>
+</header>
+
+<main class="container">
+  <div class="page-wrap">
+    <h1 id="title">Action</h1>
+    <div id="content"></div>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <small>© 2025 Tahakom · HR Portal</small>
+</footer>
+
+<script>
+  const params = new URLSearchParams(location.search);
+  const slug   = (params.get('slug') || '').toLowerCase();
+  const title  = params.get('title') || 'Action';
+  document.getElementById('title').textContent = title;
+
+  const content = document.getElementById('content');
+
+  // helper for submit -> confirmation
+  function submitToConfirmation(action, section){
+    const qs = new URLSearchParams({ action, section });
+    location.href = `confirmation.html?${qs.toString()}`;
+  }
+
+  const templates = {
+    'trip': () => `
+      <p>Fill the Business Trip details below and submit for approval.</p>
+      <form class="form" onsubmit="event.preventDefault(); submitToConfirmation('Business Trip','Home / Business Trip');">
+        <label>Destination <input required placeholder="e.g., Jeddah"/></label>
+        <label>Purpose <input required placeholder="Workshop / Meeting"/></label>
+        <label>Start <input type="date" required/></label>
+        <label>End <input type="date" required/></label>
+        <label>Estimated Cost (SAR) <input type="number" min="0" step="1" /></label>
+        <button type="submit">Submit Trip Request</button>
+      </form>
+    `,
+    'time': () => `
+      <p>Manage your leave and time sheet.</p>
+      <form class="form" onsubmit="event.preventDefault(); submitToConfirmation('Time Management','Home / Time');">
+        <label>Action
+          <select required>
+            <option value="">Choose…</option>
+            <option>Check-in Correction</option>
+            <option>Leave Request</option>
+            <option>Timesheet Submission</option>
+          </select>
+        </label>
+        <label>Notes <textarea rows="4" placeholder="Add details…"></textarea></label>
+        <button type="submit">Submit</button>
+      </form>
+    `,
+    'badge': () => `
+      <p>Request a new badge or update access.</p>
+      <form class="form" onsubmit="event.preventDefault(); submitToConfirmation('Employee Badge','Home / Badge');">
+        <label>Reason
+          <select required>
+            <option value="">Choose…</option>
+            <option>Lost</option>
+            <option>Damaged</option>
+            <option>Access Change</option>
+            <option>Name Change</option>
+          </select>
+        </label>
+        <label>Notes <textarea rows="3"></textarea></label>
+        <button type="submit">Submit Badge Request</button>
+      </form>
+    `,
+    'injury': () => `
+      <p>Report a work injury incident.</p>
+      <form class="form" onsubmit="event.preventDefault(); submitToConfirmation('Work Injury','Home / Work Injury');">
+        <label>Date of Incident <input type="date" required/></label>
+        <label>Location <input required placeholder="e.g., Riyadh HQ – Parking"/></label>
+        <label>Description <textarea rows="4" required></textarea></label>
+        <button type="submit">Report Incident</button>
+      </form>
+    `,
+    'coc': () => `
+      <p>Request a Chamber of Commerce letter.</p>
+      <form class="form" onsubmit="event.preventDefault(); submitToConfirmation('Chamber of Commerce Letter','Home / CoC');">
+        <label>Recipient Company <input required /></label>
+        <label>Language
+          <select required>
+            <option>Arabic</option>
+            <option>English</option>
+            <option>Bilingual</option>
+          </select>
+        </label>
+        <label>Purpose <input placeholder="Sponsorship / Visa / Tender …" /></label>
+        <button type="submit">Generate Request</button>
+      </form>
+    `,
+    // generic info pages
+    'pending': () => `<p>You have <strong>2</strong> pending items. Visit <a href="employee.html#history">History</a> to review.</p>`,
+    'training': () => `<p>Explore the 2023 training catalog and enroll in courses.</p>`,
+    'cycle': () => `<p>Read the performance cycle guidelines and timelines for 2025.</p>`,
+    'infosec': () => `<p>Latest Information Security policies and procedures.</p>`,
+    'dev-req': () => `<p>Submit enhancement or development requests for HR systems.</p>`,
+    'delegate': () => `<p>Delegate your workflows to a colleague while you are away.</p>`,
+    'timeoff': () => `<p>Submit a time-off request under <a href="employee.html#leave-request">Leave</a>.</p>`,
+    'org-chart': () => `<p>View the organisation chart and reporting lines.</p>`,
+    'learning': () => `<p>Your learning dashboard and enrolled courses.</p>`,
+    'docs': () => `<p>Browse company documents and policies.</p>`,
+    'reminders': () => `<p>All upcoming reminders and deadlines.</p>`,
+    'favourites': () => `<p>Your pinned shortcuts live here.</p>`,
+    'search': () => `<p>Search results are not implemented in this mock. Try Quick Actions.</p>`
+  };
+
+  const renderer = templates[slug] || (() => `<p>This is a simple page for <strong>${title}</strong>.</p>`);
+  content.innerHTML = renderer();
+
+  // expose function to inline handlers
+  window.submitToConfirmation = submitToConfirmation;
+</script>
+</body>
+</html>

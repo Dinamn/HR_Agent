@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Unavailable</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .center-card{
+      max-width: 600px; margin: 16vh auto; padding: 24px;
+      background:#fff; border:1px solid var(--border); border-radius:14px; box-shadow:var(--shadow);
+      text-align:center;
+    }
+    .center-card h1{ margin-top:0 }
+    .center-card p{ color: var(--muted) }
+    .center-card a.btn{
+      display:inline-block; margin-top:12px; padding:10px 14px; border-radius:10px;
+      border:1px solid var(--brand-teal); background: var(--brand-teal); color:#083b37; font-weight:700; text-decoration:none;
+    }
+  </style>
+</head>
+<body>
+<header class="site-header">
+  <div class="brand">
+    <img src="tahakom-logo.png" alt="Tahakom logo" class="logo" />
+    <span>TAHAKOM • HR Portal</span>
+  </div>
+  <nav class="top-nav">
+    <a class="nav-link" href="index.html">Home</a>
+    <a class="nav-link" href="employee.html">Employee Information</a>
+  </nav>
+</header>
+
+<main class="container">
+  <div class="center-card">
+    <h1 id="title">Unavailable</h1>
+    <p>Please try again later.</p>
+    <a class="btn" href="index.html">Back to Home</a>
+  </div>
+</main>
+
+<footer class="site-footer">
+  <small>© 2025 Tahakom · HR Portal</small>
+</footer>
+
+<script>
+  const p = new URLSearchParams(location.search);
+  const t = p.get('title');
+  if (t) document.getElementById('title').textContent = `${t} Unavailable`;
+</script>
+</body>
+</html>

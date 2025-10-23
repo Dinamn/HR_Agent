@@ -1,0 +1,302 @@
+[
+    {
+      "ID": 1,
+      "question": "What is the minimum percentage of Saudi workers an employer must employ?",
+      "answer": "75% of the total number of workers",
+      "source": 2
+    },
+    {
+      "ID": 2,
+      "question": "How long can a probation period last for a worker?",
+      "answer": "Maximum 90 days, extendable by written agreement up to 180 days",
+      "source": 5
+    },
+    {
+      "ID": 3,
+      "question": "What is the definition of 'Continuous Service' in the Labor Law?",
+      "answer": "Uninterrupted service for the same employer or legal successor from the starting date, including official holidays, exam leaves, and unpaid absences not exceeding 20 days per year",
+      "source": 1
+    },
+    {
+      "ID": 4,
+      "question": "What percentage must employers employing 25+ workers allocate for professionally disabled persons?",
+      "answer": "At least 4% of the total number of workers",
+      "source": 2
+    },
+    {
+      "ID": 5,
+      "question": "What conditions must be met for a non-Saudi to obtain a work permit?",
+      "answer": "Worker must have lawfully entered the country, possess needed qualifications not available among citizens, and have a contract with an employer",
+      "source": 3
+    },
+    {
+      "ID": 6,
+      "question": "Who bears the fees for work permits and residence permits for non-Saudi workers?",
+      "answer": "The employer bears all fees including work permits, residence permits, and related fines",
+      "source": 3
+    },
+    {
+      "ID": 7,
+      "question": "What is the minimum annual training requirement for employers with 50+ workers?",
+      "answer": "At least 12% of Saudi workers must be trained annually",
+      "source": 4
+    },
+    {
+      "ID": 8,
+      "question": "How much notice is required to terminate an indefinite term contract for monthly-paid workers?",
+      "answer": "Not less than 60 days written notice",
+      "source": 5
+    },
+    {
+      "ID": 9,
+      "question": "What is the end-of-service award calculation for the first five years?",
+      "answer": "Half-month wage for each of the first five years",
+      "source": 5
+    },
+    {
+      "ID": 10,
+      "question": "After how many years of service does a resigning worker receive full end-of-service award?",
+      "answer": "10 years or more",
+      "source": 5
+    },
+    {
+      "ID": 11,
+      "question": "What is the maximum daily working hours during Ramadan for Muslims?",
+      "answer": "Seven hours per day or 35 hours per week",
+      "source": 6
+    },
+    {
+      "ID": 12,
+      "question": "How many consecutive hours can a worker work without a break?",
+      "answer": "Maximum five consecutive hours",
+      "source": 6
+    },
+    {
+      "ID": 13,
+      "question": "What is the minimum annual leave for workers?",
+      "answer": "21 days, increased to 30 days after five consecutive years",
+      "source": 6
+    },
+    {
+      "ID": 14,
+      "question": "How many days of paid sick leave is a worker entitled to?",
+      "answer": "30 days full pay, 60 days at 75% pay, then 30 days unpaid",
+      "source": 6
+    },
+    {
+      "ID": 15,
+      "question": "What is the overtime pay rate for regular overtime hours?",
+      "answer": "Hourly wage plus 50% of basic wage",
+      "source": 6
+    },
+    {
+      "ID": 16,
+      "question": "How many weekly rest days are workers entitled to?",
+      "answer": "Two rest days per week with full pay, one being Friday",
+      "source": 6
+    },
+    {
+      "ID": 17,
+      "question": "What defines a part-time worker?",
+      "answer": "A worker who works less than half the usual daily working hours at the firm",
+      "source": 7
+    },
+    {
+      "ID": 18,
+      "question": "What is the duration of maternity leave for female workers?",
+      "answer": "10 weeks fully paid, extendable by 2 months unpaid",
+      "source": 9
+    },
+    {
+      "ID": 19,
+      "question": "Can an employer terminate a female worker during pregnancy?",
+      "answer": "No, employers cannot terminate employment during pregnancy or maternity leave",
+      "source": 9
+    },
+    {
+      "ID": 20,
+      "question": "What is the minimum age for employment?",
+      "answer": "15 years, with exceptions for light work between 13-15 years under specific conditions",
+      "source": 10
+    },
+    {
+      "ID": 21,
+      "question": "What are the maximum working hours for minors?",
+      "answer": "Six hours per day, four hours during Ramadan",
+      "source": 10
+    },
+    {
+      "ID": 22,
+      "question": "What compensation is due for permanent total disability from work injury?",
+      "answer": "Three years' wages with a minimum of 54,000 riyals",
+      "source": 8
+    },
+    {
+      "ID": 23,
+      "question": "How long can weekly rest periods be consolidated in remote areas?",
+      "answer": "Up to eight weeks with employer-worker agreement and Ministry approval",
+      "source": 6
+    },
+    {
+      "ID": 24,
+      "question": "What is the maximum deduction allowed from wages for fines?",
+      "answer": "Five-day wage per month maximum",
+      "source": 5
+    },
+    {
+      "ID": 25,
+      "question": "What language must employment contracts be written in?",
+      "answer": "Arabic, with foreign languages permitted alongside but Arabic prevails",
+      "source": 1
+    },
+    {
+      "ID": 26,
+      "question": "How many days of bereavement leave for death of spouse?",
+      "answer": "Five days with full pay",
+      "source": 6
+    },
+    {
+      "ID": 27,
+      "question": "What is the minimum tonnage for a vessel to be subject to Marine Employment Contract provisions?",
+      "answer": "500 tons",
+      "source": 11
+    },
+    {
+      "ID": 28,
+      "question": "What is the maximum working hours for seamen on high seas?",
+      "answer": "14 hours in 24 hours, not exceeding 72 hours in 7 days",
+      "source": 11
+    },
+    {
+      "ID": 29,
+      "question": "What is the minimum age for working in mines and quarries?",
+      "answer": "18 years",
+      "source": 12
+    },
+    {
+      "ID": 30,
+      "question": "What are the maximum underground working hours in mines?",
+      "answer": "Seven hours per day",
+      "source": 12
+    },
+    {
+      "ID": 31,
+      "question": "What powers do work inspectors have?",
+      "answer": "Access any firm anytime without notice, review records, take samples, question workers and employers",
+      "source": 13
+    },
+    {
+      "ID": 32,
+      "question": "What is the maximum fine for Labor Law violations?",
+      "answer": "100,000 riyals",
+      "source": 15
+    },
+    {
+      "ID": 33,
+      "question": "How long after employment termination can labor claims be filed?",
+      "answer": "12 months from termination date",
+      "source": 15
+    },
+    {
+      "ID": 34,
+      "question": "What percentage of fines may be awarded to inspectors who uncover violations?",
+      "answer": "Up to 25% of the collected fine amount",
+      "source": 15
+    },
+    {
+      "ID": 35,
+      "question": "When can an employer assign a worker to different work without consent?",
+      "answer": "In cases of necessity for transient circumstances, maximum 30 days per year",
+      "source": 5
+    },
+    {
+      "ID": 36,
+      "question": "What is the 'iddah leave' duration for Muslim female workers whose husbands die?",
+      "answer": "At least 4 months and 10 days with full pay",
+      "source": 9
+    },
+    {
+      "ID": 37,
+      "question": "How many employers with 50+ female workers must provide childcare?",
+      "answer": "Must provide babysitters if 10+ children under age 6",
+      "source": 9
+    },
+    {
+      "ID": 38,
+      "question": "What is the maximum duration for temporary work?",
+      "answer": "90 days",
+      "source": 1
+    },
+    {
+      "ID": 39,
+      "question": "How long must an employer notify workers before annual leave?",
+      "answer": "At least 30 days in advance",
+      "source": 6
+    },
+    {
+      "ID": 40,
+      "question": "What happens to unused annual leave upon termination?",
+      "answer": "Worker receives wage payment for all accrued unused leave days",
+      "source": 6
+    },
+    {
+      "ID": 41,
+      "question": "Can work permits substitute for other professional licenses?",
+      "answer": "No, work permits do not substitute for other required licenses",
+      "source": 3
+    },
+    {
+      "ID": 42,
+      "question": "What is the maximum period an employer can postpone annual leave?",
+      "answer": "90 days after the year it's due, extendable to end of following year with worker consent",
+      "source": 6
+    },
+    {
+      "ID": 43,
+      "question": "How many days leave for Hajj pilgrimage?",
+      "answer": "10-15 days including Eid Al-Adha, once during service",
+      "source": 6
+    },
+    {
+      "ID": 44,
+      "question": "What categories of workers are exempt from the Labor Law?",
+      "answer": "Employer's family members, sports players/coaches, domestic workers, agricultural workers, certain sea workers, and short-term non-Saudi workers",
+      "source": 1
+    },
+    {
+      "ID": 45,
+      "question": "When must wages be paid for monthly-paid workers?",
+      "answer": "Once per month",
+      "source": 6
+    },
+    {
+      "ID": 46,
+      "question": "What is required before employing a minor?",
+      "answer": "National ID/birth certificate, medical fitness report, and guardian's consent",
+      "source": 10
+    },
+    {
+      "ID": 47,
+      "question": "How long can a non-competition clause be valid after employment ends?",
+      "answer": "Maximum two years from termination date",
+      "source": 5
+    },
+    {
+      "ID": 48,
+      "question": "What nursing break time are female workers entitled to?",
+      "answer": "One hour per day total, counted as working hours with no wage reduction",
+      "source": 9
+    },
+    {
+      "ID": 49,
+      "question": "Within how many hours must an employer report material loss caused by a worker?",
+      "answer": "24 hours after becoming aware of the incident",
+      "source": 5
+    },
+    {
+      "ID": 50,
+      "question": "What is the training period requirement for work inspectors?",
+      "answer": "At least 90 days with conduct examination",
+      "source": 13
+    }
+  ]

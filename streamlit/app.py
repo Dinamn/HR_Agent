@@ -1,20 +1,13 @@
 import streamlit as st
 import random
 import time
+# --- add project root to import path ---
+import sys, os
+PROJECT_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+if PROJECT_ROOT not in sys.path:
+    sys.path.insert(0, PROJECT_ROOT)
+from agent.agent import call_agent
 
-
-# Streamed response emulator
-def response_generator():
-    response = random.choice(
-        [
-            "Hello there! How can I assist you today?",
-            "Hi, human! Is there anything I can help you with?",
-            "Do you need help?",
-        ]
-    )
-    for word in response.split():
-        yield word + " "
-        time.sleep(0.05)
 
 st.set_page_config(page_title="HR Agent", page_icon="🤖", layout="centered")
 
@@ -94,6 +87,6 @@ if prompt := st.chat_input("What is up?"):
 
     # Display assistant response in chat message container
     with st.chat_message("assistant"):
-        response = st.write_stream(response_generator())
+        response = st.write(call_agent(prompt))
     # Add assistant response to chat history
     st.session_state.messages.append({"role": "assistant", "content": response})

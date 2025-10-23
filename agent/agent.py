@@ -4,7 +4,7 @@ from langchain.agents import create_agent
 from langchain_openai import ChatOpenAI
 import requests
 import os
-from assets import system_msg
+from agent.assets import system_msg
 from dotenv import load_dotenv
 
 ########  tools ###########
@@ -18,6 +18,22 @@ def fetch_local_site(path: str) -> str:
    r.raise_for_status()
    return r.text
 
+def call_agent(user_input):
+   # Initialize LLM
+   load_dotenv()
+   api = os.getenv('OPENAI_API_KEY')
+   llm = ChatOpenAI(model="gpt-5", temperature=0)
+   tools = [fetch_local_site]
+   graph = create_agent(llm, tools)
+   final_state = graph.invoke({
+   "messages": [
+      system_msg, 
+      {"role": "user", "content": user_input}
+      ]
+      })
+   last = final_state["messages"][-1]
+   return last.content
+   
 
 
 ####### agent #########

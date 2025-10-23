@@ -340,7 +340,7 @@ ul.timeline span{
   justify-content: center;
   align-items: stretch;
   gap: 16px;                      /* space between tiles */
-  margin-top: 24px;
+  margin-top: 0px;
   overflow-x: auto;               /* allow sideways scroll on small screens */
   -webkit-overflow-scrolling: touch;
   padding: 4px 2px;               /* tiny padding so box-shadow isn't clipped */
@@ -502,6 +502,11 @@ ul.timeline span{
 }
 .wide-hero h1{
   color: #fff !important;              /* white text */
+  text-shadow: none;                   /* remove purple/black glow if any */
+}
+
+.wide-heroo h1{
+  color:  #5b2b51;
   text-shadow: none;                   /* remove purple/black glow if any */
 }
 

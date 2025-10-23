@@ -9,7 +9,7 @@
 <body>
 <header class="site-header">
   <div class="brand">
-    <img src="tahakom-logo.png" alt="Tahakom logo" class="logo" />
+    <img src="images\tahakom-logo.png" alt="Tahakom logo" class="logo" />
     <span>TAHAKOM • HR Portal</span>
   </div>
   <nav class="top-nav">
@@ -126,6 +126,23 @@
 
   window.addEventListener('hashchange', refreshActive);
   buildTabs();
+
+  // Handle all submit or request buttons to redirect to confirmation.html
+  document.querySelectorAll('.form button').forEach(btn => {
+    btn.addEventListener('click', () => {
+      // Determine context
+      const section = btn.closest('section');
+      const sectionName = section ? section.querySelector('h2, h1')?.textContent?.trim() : 'Employee Page';
+      const actionName = btn.textContent.trim() || 'Request';
+      // Build URL params
+      const params = new URLSearchParams({
+        action: actionName,
+        section: sectionName
+      });
+      // Redirect to confirmation page
+      window.location.href = `confirmation.html?${params.toString()}`;
+    });
+  });
 </script>
 
 <main class="container">
@@ -371,5 +388,54 @@
 <footer class="site-footer">
   <small>© 2025 Tahakom · HR Portal</small>
 </footer>
+<script>
+  // Redirect any form submit or button click inside a form to confirmation.html
+  (function () {
+    function goToConfirmation(fromEl) {
+      const section = fromEl.closest('section');
+      const sectionName =
+        (section && (section.querySelector('h2, h1')?.textContent || '').trim()) ||
+        'Employee Page';
+
+      const actionName =
+        fromEl.dataset.action ||                 // e.g. data-action="Leave"
+        fromEl.value ||                          // input[type=submit] value
+        fromEl.textContent?.trim() ||            // button text
+        'Request';
+
+      const qs = new URLSearchParams({ action: actionName, section: sectionName });
+      window.location.href = `confirmation.html?${qs.toString()}`;
+    }
+
+    // 1) Catch real form submissions (Enter key, <input type="submit">, etc.)
+    document.addEventListener('submit', function (e) {
+      const form = e.target;
+      e.preventDefault(); // stop actual submission
+      // Prefer the element that triggered submit if available
+      const submitter =
+        (e.submitter) ||
+        form.querySelector('[type="submit"], button, .req, [data-action]') ||
+        form;
+      goToConfirmation(submitter);
+    });
+
+    // 2) Catch clicks on buttons inside forms (covers <button>, .req, etc.)
+    document.addEventListener('click', function (e) {
+      const btn = e.target.closest('button, .req, [data-action]');
+      if (!btn) return;
+
+      const form = btn.closest('form');
+      if (!form) return; // only intercept buttons that are part of a form
+
+      // Prevent default button behavior and redirect
+      e.preventDefault();
+      goToConfirmation(btn);
+    });
+
+    // 3) Safety: if any submit buttons are missing type, make them behave
+    document.querySelectorAll('form button:not([type])').forEach(b => b.type = 'button');
+  })();
+</script>
+
 </body>
 </html>

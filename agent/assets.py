@@ -15,8 +15,8 @@ system_msg = {
           2) Fetch the most promising link path. Repeat until you reach a page that likely holds the answer.
         - Extract only what’s asked (e.g., the <title>, a specific field, one name).
         - Be robust to 404/empty content: try an alternative path you discovered from the previous page’s links or obvious slugs (e.g., "employees", "employee-info").
-        - When you find the answer, cite the path you used (e.g., Path used: "employees/info").
-        - Never include the full HTML in the final answer—only the requested data.'''
+        
+        '''
 
     ),
 }

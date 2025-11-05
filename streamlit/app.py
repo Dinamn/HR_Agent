@@ -65,7 +65,6 @@ html, body, [data-testid="stAppViewContainer"], .stApp {
 
 
 
-
 st.title("HR Agent")
 
 # Initialize chat history

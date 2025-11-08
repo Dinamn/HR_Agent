@@ -137,7 +137,7 @@ def initialize_vector_store(embeddings: AzureOpenAIEmbeddings) -> FAISS:
 
 
 # ============================================================
-# LAZY INITIALIZATION (Singleton Pattern)
+# EAGER INITIALIZATION (Singleton Pattern)
 # ============================================================
 
 _vector_store: Optional[FAISS] = None
@@ -146,7 +146,7 @@ _embeddings: Optional[AzureOpenAIEmbeddings] = None
 
 def get_vector_store() -> FAISS:
     """
-    Get or lazily initialize the global vector store.
+    Get or initialize the global vector store.
     
     This function uses a singleton pattern to ensure:
     - Vector store is only initialized once
@@ -159,7 +159,7 @@ def get_vector_store() -> FAISS:
     global _vector_store, _embeddings
     
     if _vector_store is None:
-        print("🔄 Initializing vector store for the first time...")
+        print("🚀 Initializing vector store...")
         _embeddings = initialize_embeddings()
         _vector_store = initialize_vector_store(_embeddings)
         print("✓ Vector store ready")
@@ -219,51 +219,20 @@ Do NOT rely on general knowledge—use this tool to ensure accuracy.
 
 
 # ============================================================
-# UTILITY FUNCTIONS
+# INITIALIZATION ON MODULE LOAD
 # ============================================================
 
-def get_vector_store_stats() -> dict:
-    """
-    Get statistics about the vector store.
-    
-    Returns:
-        Dictionary with store information
-    """
-    vector_store = get_vector_store()
-    return {
-        "total_documents": vector_store.index.ntotal,
-        "embedding_dimension": vector_store.index.d,
-        "docstore_size": len(vector_store.docstore._dict),
-    }
+print("=" * 70)
+print("🚀 Initializing HR Agent Vector Store...")
+print("=" * 70)
 
+try:
+    from dotenv import load_dotenv
+    load_dotenv()
+    get_vector_store()
+    print("✓ Vector store successfully initialized on startup")
+except Exception as e:
+    print(f"❌ Error initializing vector store: {e}")
+    print("⚠ The application may not work properly without the vector store")
 
-def search_documents(query: str, k: int = 4) -> List[Document]:
-    """
-    Direct search in the vector store (useful for testing).
-    
-    Args:
-        query: Search query
-        k: Number of results to return
-        
-    Returns:
-        List of Document objects
-    """
-    vector_store = get_vector_store()
-    results = vector_store.similarity_search(query, k=k)
-    return results
-
-
-def search_documents_with_scores(query: str, k: int = 4) -> List[tuple]:
-    """
-    Search with similarity scores (useful for debugging).
-    
-    Args:
-        query: Search query
-        k: Number of results to return
-        
-    Returns:
-        List of (Document, score) tuples
-    """
-    vector_store = get_vector_store()
-    results = vector_store.similarity_search_with_score(query, k=k)
-    return results
+print()

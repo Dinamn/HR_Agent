@@ -4,11 +4,12 @@ from datetime import date, timedelta
 from typing import List, TypedDict
 
 # For Python 3.9: Annotated is in typing_extensions
-try:
-    from typing import Annotated
-except ImportError:
-    from typing_extensions import Annotated
-
+# try:
+#     from typing import Annotated
+# except ImportError:
+#     from typing_extensions import Annotated
+from typing import Annotated
+from .rag_tool import get_retriever_tool
 from langchain_openai import ChatOpenAI
 from langchain.tools import tool
 from langchain_core.messages import SystemMessage, HumanMessage, AIMessage, BaseMessage
@@ -23,7 +24,15 @@ from .tools import (
 )
 
 # -------- LLM (selectable via .env) --------
-llm = ChatOpenAI(model=os.getenv("OPENAI_MODEL", "gpt-4o-mini"), temperature=0)
+from langchain_openai import AzureChatOpenAI
+
+llm = AzureChatOpenAI(
+    azure_deployment=os.getenv("AZURE_CHAT_DEPLOYMENT"),   # e.g. "gpt-5-chat" (DEPLOYMENT NAME)
+    api_version=os.getenv("AZURE_OPENAI_API_VERSION"),     # e.g. "2024-02-01"
+    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),     # e.g. "https://<your>.openai.azure.com/"
+    api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+    temperature=0,
+)
 
 
 # -------- LangGraph state with message aggregator --------
@@ -89,13 +98,21 @@ def build_graph_for(user_id: int):
         )
         return {"ok": True, "profile": row[0] if row else None}
 
-    tools = [read_db, raise_leave_tool, cancel_leave_tool, edit_profile_tool]
+    labor_law_retriever = get_retriever_tool()    
+
+    tools = [read_db, raise_leave_tool, cancel_leave_tool, edit_profile_tool,labor_law_retriever]
     llm_with_tools = llm.bind_tools(tools)
 
     # ---- Nodes ----
     def planner_node(state: AgentState):
         # Produce the next assistant message (may include tool calls)
         resp = llm_with_tools.invoke(state["messages"])
+
+        if hasattr(resp, "tool_calls") and resp.tool_calls:
+            for tool_call in resp.tool_calls:
+                name = tool_call.name if hasattr(tool_call, "name") else tool_call.get("name")
+                print(f"🔧 Tool: {name}")
+
         # With add_messages, return ONLY the new message
         return {"messages": [resp]}
 

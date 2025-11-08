@@ -99,8 +99,8 @@ def initialize_vector_store(embeddings: AzureOpenAIEmbeddings) -> FAISS:
         FAISS vector store with loaded documents
     """
     # Get document paths from environment or use defaults
-    en_doc_path = os.getenv("LABOR_DOCUMENTS_PATH", "files/Labor_documents.json")
-    ar_doc_path = os.getenv("LABOR_DOCUMENTS_AR_PATH", "files/Labor_A_documents.json")
+    en_doc_path = os.getenv("LABOR_DOCUMENTS_PATH", "app/files/Labor_documents.json")
+    ar_doc_path = os.getenv("LABOR_DOCUMENTS_AR_PATH", "app/files/Labor_A_documents.json")
     
     # Get embedding dimension
     embedding_dim = len(embeddings.embed_query("hello world"))

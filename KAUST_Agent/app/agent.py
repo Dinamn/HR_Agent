@@ -146,7 +146,12 @@ def agent_respond(text: str, user_id: int) -> str:
         # Return the last non-tool assistant message
         for m in reversed(out["messages"]):
             if isinstance(m, AIMessage) and not getattr(m, "tool_calls", None):
-                return m.content
+                ind = m.content.find("\n}")
+                trunacted_msg = m.content
+                if ind != -1:
+                    trunacted_msg = m.content[ind+2:]
+                else:
+                    return trunacted_msg
         return "Done."
     except Exception as e:
         # Friendly error so FastAPI returns 200 with a message instead of a blank 500

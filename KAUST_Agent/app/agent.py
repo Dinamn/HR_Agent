@@ -205,9 +205,12 @@ def agent_respond(text: str, user_id: int, thread_id: Optional[str] = None) -> s
         # Return the last assistant message that isn't a tool-call container
         for m in reversed(out["messages"]):
             if isinstance(m, AIMessage) and not getattr(m, "tool_calls", None):
-                return (m.content or "").strip()
-
-        return "Done."
+                ind = m.content.find("}")
+                trunacted_msg = m.content
+                if ind != -1:
+                    trunacted_msg = m.content[ind+2:]
+                    
+        return trunacted_msg
     except Exception as e:
         # Friendly error instead of a 500 from FastAPI
         return f"Error while processing your request: {str(e)}"

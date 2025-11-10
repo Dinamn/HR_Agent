@@ -206,9 +206,12 @@ def agent_respond(text: str, user_id: int, thread_id: Optional[str] = None) -> s
         for m in reversed(out["messages"]):
             if isinstance(m, AIMessage) and not getattr(m, "tool_calls", None):
                 ind = m.content.find("}")
+                print(m.content)
                 trunacted_msg = m.content
                 if ind != -1:
                     trunacted_msg = m.content[ind+2:]
+                else: 
+                    return trunacted_msg
                     
         return trunacted_msg
     except Exception as e:

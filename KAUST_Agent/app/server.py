@@ -8,6 +8,7 @@ app = FastAPI(title="HR Agent")
 class ChatIn(BaseModel):
   user: str
   text: str
+  session: str | None = None  # new
 
 def resolve_user(username: str) -> int:
   row = run_select("SELECT id FROM users WHERE username=:u", {"u": username})
@@ -16,7 +17,9 @@ def resolve_user(username: str) -> int:
 @app.post("/chat")
 def chat(inp: ChatIn):
   uid = resolve_user(inp.user)
-  reply = agent_respond(inp.text, uid)
+  thread_id = f"user:{uid}:{inp.session or 'default'}"
+  reply = agent_respond(inp.text, uid, thread_id=thread_id)
+
   return {"reply": reply}
 
 # Quick health

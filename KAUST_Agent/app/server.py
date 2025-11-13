@@ -22,6 +22,8 @@ def chat(inp: ChatIn):
 
   return {"reply": reply}
 
+
+
 # Quick health
 @app.get("/whoami/{username}")
 def whoami(username: str):

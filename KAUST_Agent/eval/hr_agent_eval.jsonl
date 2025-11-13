@@ -1,0 +1,34 @@
+{"id":"READ_EN_01","inputs":{"user":"Elaph","text":"How many annual leave days do I have left?","session":"s-read-en"},"metadata":{"bucket":"db_read","lang":"en","expected_reply_contains":"leave","expected_tool_names":["GetLeaveBalance"]}}
+{"id":"READ_EN_02","inputs":{"user":"Elaph","text":"Show my last 3 leave requests.","session":"s-read-en"},"metadata":{"bucket":"db_read","lang":"en","expected_reply_contains":"3","expected_tool_names":["GetLeaveHistory"]}}
+{"id":"READ_EN_03","inputs":{"user":"Elaph","text":"What leave requests are currently pending?","session":"s-read-en"},"metadata":{"bucket":"db_read","lang":"en","expected_reply_contains":"pending","expected_tool_names":["GetPendingLeaves"]}}
+
+{"id":"READ_AR_01","inputs":{"user":"Elaph","text":"كم عدد أيام الإجازة السنوية المتبقية لدي؟","session":"s-read-ar"},"metadata":{"bucket":"db_read","lang":"ar","expected_reply_contains":"رصيد","expected_tool_names":["GetLeaveBalance"]}}
+{"id":"READ_AR_02","inputs":{"user":"Elaph","text":"اعرض آخر 3 طلبات إجازة لي.","session":"s-read-ar"},"metadata":{"bucket":"db_read","lang":"ar","expected_reply_contains":"3","expected_tool_names":["GetLeaveHistory"]}}
+{"id":"READ_AR_03","inputs":{"user":"Elaph","text":"ما هي طلبات الإجازة المعلّقة حاليًا؟","session":"s-read-ar"},"metadata":{"bucket":"db_read","lang":"ar","expected_reply_contains":"معلّقة","expected_tool_names":["GetPendingLeaves"]}}
+
+{"id":"WRITE_EN_01","inputs":{"user":"Elaph","text":"Submit a 2-day leave starting 2025-12-20 for personal reasons.","session":"s-write-en"},"metadata":{"bucket":"db_write","lang":"en","expected_reply_contains":"submitted","expected_tool_names":["RaiseLeave"]}}
+{"id":"WRITE_EN_02","inputs":{"user":"Elaph","text":"Update my address to 'Riyadh Tech Park, Building 4'.","session":"s-write-en"},"metadata":{"bucket":"db_write","lang":"en","expected_reply_contains":"updated","expected_tool_names":["EditProfile"]}}
+{"id":"WRITE_EN_03","inputs":{"user":"Elaph","text":"Cancel my latest pending leave","session":"s-chain-en"},"metadata":{"bucket":"chained","lang":"en","expected_reply_contains":"remaining","expected_tool_names":["CancelLeave"]}}
+
+{"id":"WRITE_AR_01","inputs":{"user":"Elaph","text":"قدّم إجازة لمدة يومين ابتداءً من 25-12-2026 لسبب شخصي.","session":"s-write-ar"},"metadata":{"bucket":"db_write","lang":"ar","expected_reply_contains":"تم","expected_tool_names":["RaiseLeave"]}}
+{"id":"WRITE_AR_02","inputs":{"user":"Elaph","text":"حدّث عنواني إلى \"Riyadh Tech Park, Building 4\".","session":"s-write-ar"},"metadata":{"bucket":"db_write","lang":"ar","expected_reply_contains":"تم التحديث","expected_tool_names":["EditProfile"]}}
+{"id":"WRITE_AR_03","inputs":{"user":"Elaph","text":"الغي اخر اجازة رفعتها","session":"s-write-ar"},"metadata":{"bucket":"db_write","lang":"ar","expected_reply_contains":"تم إلغاء","expected_tool_names":["CancelLeave"]}}
+
+
+{"id":"CHAIN_EN_01","inputs":{"user":"Elaph","text":"Submit a 1-day leave on 30-12-2025 and then show my remaining balance.","session":"s-chain-en"},"metadata":{"bucket":"chained","lang":"en","expected_reply_contains":"remaining","expected_tool_names":["RaiseLeave","GetLeaveBalance"]}}
+{"id":"CHAIN_EN_02","inputs":{"user":"Elaph","text":"Show my leave balance, then raise a 2-day leave starting 1-12-2025.","session":"s-chain-en"},"metadata":{"bucket":"chained","lang":"en","expected_reply_contains":"submitted","expected_tool_names":["GetLeaveBalance","RaiseLeave"]}}
+{"id":"CHAIN_EN_03","inputs":{"user":"Elaph","text":"Cancel my latest pending leave and then show my remaining balance.","session":"s-chain-en"},"metadata":{"bucket":"chained","lang":"en","expected_reply_contains":"remaining","expected_tool_names":["CancelLeave","GetLeaveBalance"]}}
+
+
+{"id":"CHAIN_AR_01","inputs":{"user":"Elaph","text":"قدّم إجازة ليوم واحد بتاريخ 30-12-2026 ثم اعرض رصيدي المتبقي.","session":"s-chain-ar"},"metadata":{"bucket":"chained","lang":"ar","expected_reply_contains":"الرصيد","expected_tool_names":["RaiseLeave","GetLeaveBalance"]}}
+{"id":"CHAIN_AR_02","inputs":{"user":"Elaph","text":"اعرض رصيدي من الاجازات ثم ارفع اجازة لمدة يومين بداية من تاريخ 1-12-2026","session":"s-chain-ar"},"metadata":{"bucket":"chained","lang":"ar","expected_reply_contains":"تم","expected_tool_names":["GetLeaveBalance","RaiseLeave"]}}
+{"id":"CHAIN_AR_03","inputs":{"user":"Elaph","text":"ألغِ آخر إجازة معلّقة ثم اعرض رصيدي المتبقي.","session":"s-chain-ar"},"metadata":{"bucket":"chained","lang":"ar","expected_reply_contains":"الرصيد","expected_tool_names":["CancelLeave","GetLeaveBalance"]}}
+
+
+{"id":"CLARIFY_EN_01","inputs":{"user":"Elaph","text":"Submit a leave.","session":"s-clar-en"},"metadata":{"bucket":"clarification","lang":"en","expected_reply_contains":"start date","expected_tool_names":[]}}
+{"id":"CLARIFY_EN_02","inputs":{"user":"Elaph","text":"Cancel my leave.","session":"s-clar-en"},"metadata":{"bucket":"clarification","lang":"en","expected_reply_contains":"which leave","expected_tool_names":[]}}
+{"id":"CLARIFY_EN_03","inputs":{"user":"Elaph","text":"Update my profile.","session":"s-clar-en"},"metadata":{"bucket":"clarification","lang":"en","expected_reply_contains":"which field","expected_tool_names":[]}}
+
+{"id":"CLARIFY_AR_01","inputs":{"user":"Elaph","text":"قدّم إجازة.","session":"s-clar-ar"},"metadata":{"bucket":"clarification","lang":"ar","expected_reply_contains":"تاريخ","expected_tool_names":[]}}
+{"id":"CLARIFY_AR_02","inputs":{"user":"Elaph","text":"ألغِ إجازتي.","session":"s-clar-ar"},"metadata":{"bucket":"clarification","lang":"ar","expected_reply_contains":"أي إجازة","expected_tool_names":[]}}
+{"id":"CLARIFY_AR_03","inputs":{"user":"Elaph","text":"حدّث ملفي الشخصي.","session":"s-clar-ar"},"metadata":{"bucket":"clarification","lang":"ar","expected_reply_contains":"أي حقل","expected_tool_names":[]}}

@@ -36,6 +36,8 @@ from .tools import (
 )
 from .db import run_select, run_write  # used by EditProfile tool
 
+from langsmith.wrappers import wrap_openai
+from langsmith import traceable
 
 
 # -------- LLM (Azure OpenAI) --------
@@ -150,6 +152,9 @@ def build_graph_for(user_id: int):
 
     # ----- NODES -----
 
+
+
+
     def planner_node(state: AgentState):
         """Produce the next assistant message (may include tool calls)."""
         resp = llm_with_tools.invoke(state["messages"])
@@ -162,6 +167,8 @@ def build_graph_for(user_id: int):
 
 
         return {"messages": [resp]}  # with add_messages, we only return the new message
+    
+    
 
     def should_continue(state: AgentState) -> bool:
         last = state["messages"][-1]
@@ -177,12 +184,16 @@ def build_graph_for(user_id: int):
 
     return graph.compile(checkpointer=checkpointer)
 
+from langsmith import traceable
 
+
+@traceable(name="agent_respond")
 def agent_respond(text: str, user_id: int, thread_id: Optional[str] = None) -> str:
     """
     Build a per-user graph, run, and return the final assistant message.
     Uses LangGraph checkpointer memory keyed by thread_id.
     """
+    # app_graph = build_graph_for(user_id)
     app_graph = build_graph_for(user_id)
 
     messages: List[BaseMessage] = [
@@ -192,7 +203,7 @@ def agent_respond(text: str, user_id: int, thread_id: Optional[str] = None) -> s
 
     # Respect the caller's thread_id; fallback to a deterministic default
     thread_key = thread_id or f"user:{user_id}:default"
-
+    
     try:
         out = app_graph.invoke(
             {"messages": messages},

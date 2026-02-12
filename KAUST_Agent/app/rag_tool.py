@@ -8,7 +8,8 @@ import os
 import json
 from typing import List, Optional
 from langchain_core.documents import Document
-from langchain_openai import AzureOpenAIEmbeddings
+# from langchain_openai import AzureOpenAIEmbeddings
+from langchain_openai import OpenAIEmbeddings
 import faiss
 from langchain_community.docstore.in_memory import InMemoryDocstore
 from langchain_community.vectorstores import FAISS
@@ -50,43 +51,65 @@ def load_documents_from_json(json_path: str) -> List[Document]:
 # EMBEDDINGS
 # ============================================================
 
-def initialize_embeddings() -> AzureOpenAIEmbeddings:
+def initialize_embeddings() -> OpenAIEmbeddings:
     """
-    Initialize Azure OpenAI embeddings for vector store.
-    
-    Returns:
-        AzureOpenAIEmbeddings instance
-        
-    Raises:
-        ValueError: If required environment variables are missing
+    Initialize OpenAI embeddings for vector store.
     """
     required_vars = [
-        "AZURE_OPENAI_ENDPOINT",
-        "EMBED_AZURE_CHAT_DEPLOYMENT",
-        "EMBED_AZURE_OPENAI_API_VERSION",
-        "AZURE_OPENAI_API_KEY"
+        "OPENAI_API_KEY",
+        "OPENAI_EMBED_MODEL",  # optional but recommended
     ]
-    
+
+    # If you want OPENAI_EMBED_MODEL optional, remove it from required_vars and default below.
     missing = [var for var in required_vars if not os.getenv(var)]
     if missing:
         raise ValueError(f"Missing environment variables: {', '.join(missing)}")
-    
-    embeddings = AzureOpenAIEmbeddings(
-        azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
-        azure_deployment=os.getenv("EMBED_AZURE_CHAT_DEPLOYMENT"),
-        openai_api_version=os.getenv("EMBED_AZURE_OPENAI_API_VERSION"),
-        api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+
+    embeddings = OpenAIEmbeddings(
+        model=os.getenv("OPENAI_EMBED_MODEL", "text-embedding-3-large"),
+        api_key=os.getenv("OPENAI_API_KEY"),
     )
-    
+
     print("✓ Embeddings initialized")
     return embeddings
+
+# def initialize_embeddings() -> AzureOpenAIEmbeddings:
+#     """
+#     Initialize Azure OpenAI embeddings for vector store.
+    
+#     Returns:
+#         AzureOpenAIEmbeddings instance
+        
+#     Raises:
+#         ValueError: If required environment variables are missing
+#     """
+#     required_vars = [
+#         "AZURE_OPENAI_ENDPOINT",
+#         "EMBED_AZURE_CHAT_DEPLOYMENT",
+#         "EMBED_AZURE_OPENAI_API_VERSION",
+#         "AZURE_OPENAI_API_KEY"
+#     ]
+    
+#     missing = [var for var in required_vars if not os.getenv(var)]
+#     if missing:
+#         raise ValueError(f"Missing environment variables: {', '.join(missing)}")
+    
+#     embeddings = AzureOpenAIEmbeddings(
+#         azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+#         azure_deployment=os.getenv("EMBED_AZURE_CHAT_DEPLOYMENT"),
+#         openai_api_version=os.getenv("EMBED_AZURE_OPENAI_API_VERSION"),
+#         api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+#     )
+    
+#     print("✓ Embeddings initialized")
+#     return embeddings
 
 
 # ============================================================
 # VECTOR STORE
 # ============================================================
 
-def initialize_vector_store(embeddings: AzureOpenAIEmbeddings) -> FAISS:
+def initialize_vector_store(embeddings: OpenAIEmbeddings) -> FAISS:
     """
     Initialize FAISS vector store with Saudi Labor Law documents.
     
@@ -141,7 +164,7 @@ def initialize_vector_store(embeddings: AzureOpenAIEmbeddings) -> FAISS:
 # ============================================================
 
 _vector_store: Optional[FAISS] = None
-_embeddings: Optional[AzureOpenAIEmbeddings] = None
+_embeddings: Optional[OpenAIEmbeddings] = None
 
 
 def get_vector_store() -> FAISS:

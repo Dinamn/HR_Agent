@@ -11,7 +11,8 @@ import sqlite3
 from datetime import date, timedelta
 from typing import List, Optional, TypedDict, Annotated
 
-from langchain_openai import AzureChatOpenAI
+# from langchain_openai import AzureChatOpenAI
+from langchain_openai import ChatOpenAI
 from langchain.tools import tool
 from langchain_core.messages import SystemMessage, HumanMessage, AIMessage, BaseMessage
 
@@ -43,12 +44,18 @@ from langsmith import traceable
 # -------- LLM (Azure OpenAI) --------
 # Uses environment variables:
 #   AZURE_OPENAI_API_KEY, AZURE_OPENAI_ENDPOINT, AZURE_OPENAI_API_VERSION, AZURE_CHAT_DEPLOYMENT
-llm = AzureChatOpenAI(
-    azure_deployment=os.getenv("AZURE_CHAT_DEPLOYMENT"),
-    api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
-    azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
-    api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+# llm = AzureChatOpenAI(
+#     azure_deployment=os.getenv("AZURE_CHAT_DEPLOYMENT"),
+#     api_version=os.getenv("AZURE_OPENAI_API_VERSION"),
+#     azure_endpoint=os.getenv("AZURE_OPENAI_ENDPOINT"),
+#     api_key=os.getenv("AZURE_OPENAI_API_KEY"),
+#     temperature=0,
+# )
+
+llm = ChatOpenAI(
+    model="gpt-4o",  # or gpt-4.1, gpt-4o-mini, etc.
     temperature=0,
+    api_key=os.getenv("OPENAI_API_KEY"),
 )
 
 # -------- Memory (SQLite checkpointer) --------

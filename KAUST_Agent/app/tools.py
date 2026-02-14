@@ -59,7 +59,7 @@ def get_pending_leaves_for(user_id: int) -> Dict[str, List[Dict[str, Any]]]:
 
 def get_profile_summary_for(user_id: int) -> Dict[str, Any]:
     rows = run_select("""
-        SELECT id, username, full_name, address, contact_phone, email, employment_title, org_unit
+        SELECT id, username, full_name, address, contact_phone, email, employment_title, org_unit, direct_manager
         FROM users WHERE id = :uid
     """, {"uid": user_id})
     return rows[0] if rows else {}

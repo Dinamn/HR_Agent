@@ -11,7 +11,9 @@ CREATE TABLE users (
   start_date DATE,
   employment_title TEXT,
   base_salary NUMERIC(12,2),
-  org_unit TEXT
+  org_unit TEXT,
+  direct_manager TEXT
+
 );
 
 -- Leave balances per user per year

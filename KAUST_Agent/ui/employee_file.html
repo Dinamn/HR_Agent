@@ -1,0 +1,668 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" type="image/jpeg" href="/ui/sap-icon.jpeg">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>My Employee File (Mock SAP)</title>
+  <style>
+    :root{
+      --teal:#25C7BC;
+      --purple:#602650;
+      --bg:#f5f7fa;
+      --card:#ffffff;
+      --text:#1f2937;
+      --muted:#6b7280;
+      --line:#e5e7eb;
+    }
+
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif;
+      background:var(--bg);
+      color:var(--text);
+    }
+
+    /* Top app bar */
+    .topbar{
+      height:64px;
+      background:#fff;
+      display:flex;
+      align-items:center;
+      padding:0 18px;
+      gap:14px;
+      border-bottom:1px solid var(--line);
+    }
+    .brand{
+      display:flex; align-items:center; gap:10px;
+      font-weight:700;
+    }
+    .brand img{ height:28px; }
+    .topbar .title{
+      font-size:18px;
+      font-weight:700;
+      color:#111827;
+      margin-right:auto;
+      display:flex;
+      align-items:center;
+      gap:6px;
+    }
+    .searchwrap{
+      flex: 0 1 560px;
+      display:flex;
+      align-items:center;
+      background:#f3f4f6;
+      border:1px solid #e5e7eb;
+      border-radius:999px;
+      padding:10px 14px;
+      gap:10px;
+    }
+    .searchwrap input{
+      border:none;
+      outline:none;
+      background:transparent;
+      width:100%;
+      font-size:14px;
+    }
+    .pill{
+      border:1px solid var(--line);
+      background:#fff;
+      border-radius:999px;
+      padding:8px 12px;
+      font-size:13px;
+      color:#374151;
+    }
+
+    /* Gradient hero header (like screenshot) */
+    .hero{
+      background: linear-gradient(90deg, var(--teal) 0%, var(--purple) 52%, #111827 100%);
+      padding:26px 26px 18px 26px;
+      color:#fff;
+      position:relative;
+      overflow:hidden;
+    }
+    .hero-inner{
+      display:flex;
+      gap:22px;
+      align-items:flex-start;
+    }
+    .big-avatar{
+      width:128px; height:128px;
+      border-radius:999px;
+      background:rgba(255,255,255,0.18);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      font-size:46px;
+      font-weight:800;
+      letter-spacing:1px;
+      border:2px solid rgba(255,255,255,0.25);
+      flex:0 0 auto;
+    }
+
+    .hero-main{
+      flex:1;
+      min-width:280px;
+    }
+    .hero-name{
+      font-size:34px;
+      font-weight:900;
+      margin:0 0 6px 0;
+      line-height:1.1;
+      display:flex;
+      align-items:center;
+      gap:10px;
+      flex-wrap:wrap;
+    }
+    .hero-sub{
+      font-size:15px;
+      opacity:0.95;
+      line-height:1.45;
+      margin-top:4px;
+    }
+    .kv{ opacity:0.9; }
+    .kv b{ opacity:1; }
+
+    /* Right completeness ring */
+    .hero-right{
+      width:230px;
+      display:flex;
+      flex-direction:column;
+      align-items:center;
+      gap:8px;
+      margin-left:auto;
+      margin-top:50px;
+    }
+    .ring{
+      width:120px; height:120px;
+      border-radius:999px;
+      background:conic-gradient(#ffffff var(--pct), rgba(255,255,255,0.22) 0);
+      display:flex;
+      align-items:center;
+      justify-content:center;
+      position:relative;
+    }
+    .ring::after{
+      content:"";
+      width:96px; height:96px;
+      border-radius:999px;
+      background:rgba(0,0,0,0.18);
+      border:1px solid rgba(255,255,255,0.18);
+      position:absolute;
+    }
+    .ring span{
+      position:relative;
+      z-index:1;
+      font-size:34px;
+      font-weight:900;
+    }
+    .hero-right .small{
+      font-size:13px;
+      opacity:0.95;
+      text-align:center;
+      line-height:1.3;
+    }
+    .hero-actions{
+      position:absolute;
+      right:20px;
+      top:18px;
+      display:flex;
+      gap:10px;
+      opacity:0.95;
+    }
+    .hero-actions button{
+      border:1px solid rgba(255,255,255,0.25);
+      background:rgba(255,255,255,0.10);
+      color:#fff;
+      border-radius:10px;
+      padding:8px 10px;
+      font-weight:600;
+      cursor:pointer;
+    }
+
+    /* Tabs */
+    .tabs{
+      background:#fff;
+      border-bottom:1px solid var(--line);
+      display:flex;
+      gap:18px;
+      padding:0 18px;
+      overflow:auto;
+    }
+    .tab{
+      padding:14px 8px;
+      font-weight:700;
+      font-size:14px;
+      color:#374151;
+      border-bottom:3px solid transparent;
+      cursor:pointer;
+      white-space:nowrap;
+    }
+    .tab.active{
+      color:#111827;
+      border-bottom-color:var(--teal);
+    }
+
+    /* Content */
+    .page{
+      max-width:1200px;
+      margin:18px auto;
+      padding:0 18px 26px 18px;
+    }
+    .grid{
+      display:grid;
+      grid-template-columns: 1.1fr 0.9fr;
+      gap:16px;
+    }
+    .card{
+      background:var(--card);
+      border:1px solid var(--line);
+      border-radius:14px;
+      box-shadow: 0 6px 18px rgba(17,24,39,0.06);
+      padding:16px;
+    }
+    .card h3{
+      margin:0 0 10px 0;
+      font-size:16px;
+    }
+    .row{
+      display:grid;
+      grid-template-columns: 200px 1fr;
+      gap:12px;
+      padding:10px 0;
+      border-top:1px solid var(--line);
+    }
+    .row:first-of-type{ border-top:none; }
+    .k{ color:var(--muted); font-weight:700; font-size:13px; }
+    .v{ font-weight:600; font-size:14px; }
+
+    table{
+      width:100%;
+      border-collapse:collapse;
+      font-size:14px;
+    }
+    th, td{
+      text-align:left;
+      padding:10px 8px;
+      border-bottom:1px solid var(--line);
+    }
+    th{
+      color:var(--muted);
+      font-size:12px;
+      letter-spacing:.02em;
+      text-transform:uppercase;
+    }
+
+    .note{ color:var(--muted); font-size:13px; margin-top:6px; }
+    .badge{
+      display:inline-block;
+      padding:4px 10px;
+      border-radius:999px;
+      font-weight:800;
+      font-size:12px;
+      border:1px solid var(--line);
+      background:#f9fafb;
+    }
+
+    @media (max-width: 980px){
+      .grid{ grid-template-columns: 1fr; }
+      .hero-right{ display:none; }
+      .searchwrap{ flex:1; }
+    }
+
+    .icon-pill {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#111827;   /* black */
+}
+
+.icon-btn {
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+
+  </style>
+</head>
+
+<body>
+  <!-- top app bar -->
+  <div class="topbar">
+    <div class="brand">
+      <img src="tahakom-logo.svg" alt="logo" />
+    </div>
+    <div class="title">My Employee File ▾</div>
+
+    <div class="searchwrap">
+      <input id="search" placeholder="Search for actions or people" />
+    </div>
+
+    <div class="pill icon-pill" id="notif">
+  <!-- Bell Icon -->
+  <svg xmlns="http://www.w3.org/2000/svg" 
+       viewBox="0 0 24 24" 
+       fill="none" 
+       stroke="currentColor" 
+       stroke-width="2" 
+       stroke-linecap="round" 
+       stroke-linejoin="round"
+       width="18" height="18">
+    <path d="M15 17h5l-1.4-1.4A2 2 0 0 1 18 14.2V11a6 6 0 1 0-12 0v3.2c0 .5-.2 1-.6 1.4L4 17h5"/>
+    <path d="M9 17a3 3 0 0 0 6 0"/>
+  </svg>
+</div>
+
+    <div class="pill" id="userpill">DA</div>
+  </div>
+
+  <!-- gradient hero -->
+  <div class="hero">
+    <div class="hero-actions">
+      <button id="actionsBtn">⋮ Actions</button>
+      <button id="headerBtn">✎ Header</button>
+      <button id="asOfBtn" class="icon-btn">
+  <svg xmlns="http://www.w3.org/2000/svg"
+       viewBox="0 0 24 24"
+       fill="none"
+       stroke="currentColor"
+       stroke-width="2"
+       stroke-linecap="round"
+       stroke-linejoin="round"
+       width="18" height="18"
+       style="margin-right:6px;">
+    <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+    <line x1="16" y1="2" x2="16" y2="6"/>
+    <line x1="8" y1="2" x2="8" y2="6"/>
+    <line x1="3" y1="10" x2="21" y2="10"/>
+  </svg>
+  As of Today
+</button>
+
+    </div>
+
+    <div class="hero-inner">
+      <div class="big-avatar" id="avatar">--</div>
+
+      <div class="hero-main">
+        <div class="hero-name">
+          <span id="name">Loading...</span>
+          <span style="font-size:18px; opacity:.9;" id="empId"></span>
+        </div>
+
+        <div class="hero-sub" id="sub1"></div>
+        <div class="hero-sub" id="sub2"></div>
+        <div class="hero-sub" id="sub3"></div>
+        <div class="hero-sub kv"><b>Local time:</b> <span id="localTime">—</span></div>
+        <div class="hero-sub" style="opacity:.9" id="email">—</div>
+      </div>
+
+      <div class="hero-right">
+        <div class="ring" id="ring" style="--pct:0deg;">
+          <span id="pct">0%</span>
+        </div>
+        <div class="small">Your profile is incomplete.<br/><span style="text-decoration:underline;">Finish Now</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- tabs -->
+<div class="tabs">
+  <div class="tab active" data-tab="profile">Profile</div>
+  <div class="tab" data-tab="personal">Personal Information</div>
+  <div class="tab" data-tab="employment">Employment Information</div>
+  <div class="tab" data-tab="comp">Compensation Information</div>
+  <div class="tab" data-tab="history">History</div>
+  <div class="tab" data-tab="leaves">Leaves</div>
+</div>
+
+  <div class="page">
+    <div class="grid">
+      <div class="card" id="leftCard">
+        <h3 id="cardTitle">Personal Information</h3>
+        <div id="details"></div>
+      </div>
+
+      <div class="card" id="rightCard">
+        <h3>Quick Info</h3>
+        <div id="quick"></div>
+        <div class="note" id="note"></div>
+      </div>
+    </div>
+  </div>
+
+<script>
+  // Default employee (can be changed by search)
+  let username = new URLSearchParams(location.search).get("username") || "Dina";
+  let currentTab = "profile";
+  let employeesCache = [];
+
+  function initials(fullName){
+    if(!fullName) return "--";
+    const p = fullName.trim().split(" ").filter(Boolean);
+    if(p.length === 1) return p[0][0].toUpperCase();
+    return (p[0][0] + p[p.length-1][0]).toUpperCase();
+  }
+
+  function setRingPercent(p){
+    const pct = Math.max(0, Math.min(100, Number(p || 0)));
+    document.getElementById("pct").textContent = pct + "%";
+    // conic-gradient expects degrees
+    document.getElementById("ring").style.setProperty("--pct", (pct*3.6) + "deg");
+  }
+
+  async function api(path){
+    const res = await fetch(path);
+    if(!res.ok){
+      const t = await res.text();
+      throw new Error(t || ("HTTP " + res.status));
+    }
+    return res.json();
+  }
+
+  function tabEl(name){ return document.querySelector(`.tab[data-tab="${name}"]`); }
+
+  function setActiveTab(name){
+    currentTab = name;
+    document.querySelectorAll(".tab").forEach(t => t.classList.remove("active"));
+    tabEl(name).classList.add("active");
+    renderTab();
+  }
+
+  async function loadEmployeesOnce(){
+    if(employeesCache.length) return employeesCache;
+    employeesCache = await api("/api/employees");
+    return employeesCache;
+  }
+
+  async function loadHeader(){
+    const data = await api(`/api/employee/${encodeURIComponent(username)}`);
+    const u = data.user;
+
+    document.getElementById("name").textContent = u.full_name || u.username;
+    document.getElementById("empId").textContent = `(${u.id})`;
+    document.getElementById("avatar").textContent = initials(u.full_name);
+    document.getElementById("email").textContent = u.email || "—";
+    document.getElementById("localTime").textContent = u.local_time || "—";
+
+    // mimic screenshot-like lines
+    document.getElementById("sub1").textContent =
+      `${u.employment_title || "—"} (${u.contract_type || "—"})`;
+    document.getElementById("sub2").textContent =
+      `${u.org_unit || "—"}`;
+    document.getElementById("sub3").textContent =
+      `HQ Office (R0) (Asia/${u.location || "—"})`;
+
+    setRingPercent(data.profile_completeness?.percent ?? 0);
+
+    // top right initials pill
+    const init = initials(u.full_name);
+    document.getElementById("userpill").textContent = init;
+
+
+  }
+
+  function renderRows(obj, mapping){
+    const wrap = document.getElementById("details");
+    wrap.innerHTML = "";
+    mapping.forEach(([label, key])=>{
+      const val = (obj && obj[key] !== undefined && obj[key] !== null && String(obj[key]).trim() !== "")
+        ? obj[key]
+        : "—";
+      const row = document.createElement("div");
+      row.className = "row";
+      row.innerHTML = `<div class="k">${label}</div><div class="v">${val}</div>`;
+      wrap.appendChild(row);
+    });
+  }
+
+  function renderTable(rows, cols){
+    const wrap = document.getElementById("details");
+    wrap.innerHTML = `
+      <table>
+        <thead>
+          <tr>${cols.map(c => `<th>${c.label}</th>`).join("")}</tr>
+        </thead>
+        <tbody>
+          ${(rows || []).map(r => `
+            <tr>
+              ${cols.map(c => `<td>${(r[c.key] ?? "—")}</td>`).join("")}
+            </tr>
+          `).join("")}
+        </tbody>
+      </table>
+    `;
+  }
+
+  function setQuickInfoHTML(html){
+  document.getElementById("quick").innerHTML = html;
+}
+
+  async function renderTab(){
+    document.getElementById("note").textContent = "";
+    const titleMap = {
+      personal: "Personal Information",
+      employment: "Employment Information",
+      comp: "Compensation Information",
+      history: "History",
+      leaves: "Leaves",
+    };
+    document.getElementById("cardTitle").textContent = titleMap[currentTab] || "Details";
+
+    if(currentTab === "profile"){
+  const data = await api(`/api/employee/${encodeURIComponent(username)}`);
+  const u = data.user;
+
+  // Fetch leave balance for Quick Info
+  const bal = await api(`/api/leave-balance/${encodeURIComponent(username)}`);
+
+  // LEFT: show all DB fields (full profile)
+  renderRows(u, [
+    ["ID", "id"],
+    ["Username", "username"],
+    ["Full Name", "full_name"],
+    ["Full Name (Arabic)", "full_name_ar"],
+    ["Email", "email"],
+    ["Phone", "contact_phone"],
+    ["Address", "address"],
+    ["Direct Manager", "direct_manager"],
+    ["Contract Type", "contract_type"],
+    ["Start Date", "start_date"],
+    ["Employment Title", "employment_title"],
+    ["Org Unit", "org_unit"],
+    
+  ]);
+
+  // RIGHT: Quick Info + Leave Balance section
+  const total = bal.annual_total ?? 0;
+  const used = bal.annual_used ?? 0;
+  const remaining = bal.remaining ?? 0;
+
+  document.getElementById("quick").innerHTML = `
+    <div class="row"><div class="k">Username</div><div class="v">${u.username}</div></div>
+    <div class="row"><div class="k">Start Date</div><div class="v">${u.start_date || "—"}</div></div>
+    <div class="row"><div class="k">Org Unit</div><div class="v">${u.org_unit || "—"}</div></div>
+    <div class="row"><div class="k">Location</div><div class="v">${u.location || u.address || "—"}</div></div>
+
+    <div style="height:10px;"></div>
+    <div style="font-weight:900; font-size:13px; color:#374151; margin:4px 0 8px 0;">
+      Leave Balance (${bal.year || "—"})
+    </div>
+    <div class="row"><div class="k">Total</div><div class="v">${total}</div></div>
+    <div class="row"><div class="k">Used</div><div class="v">${used}</div></div>
+    <div class="row"><div class="k">Remaining</div><div class="v">${remaining}</div></div>
+  `;
+document.getElementById("note").textContent = "";
+
+  return;
+}
+
+
+    if(currentTab === "personal"){
+      const data = await api(`/api/employee/${encodeURIComponent(username)}`);
+      const u = data.user;
+      renderRows(u, [
+        ["Full Name", "full_name"],
+        ["Full Name (Arabic)", "full_name_ar"],
+        ["Email", "email"],
+        ["Phone", "contact_phone"],
+        ["Address", "address"],
+      ]);
+      document.getElementById("note").textContent = "";
+      return;
+    }
+
+    if(currentTab === "employment"){
+      const data = await api(`/api/employee/${encodeURIComponent(username)}/employment`);
+      const e = data.employment;
+      renderRows(e, [
+        ["Employment Title", "employment_title"],
+        ["Org Unit", "org_unit"],
+        ["Direct Manager", "direct_manager"],
+        ["Contract Type", "contract_type"],
+        ["Start Date", "start_date"],
+        ["Work Location", "address"],
+      ]);
+      return;
+    }
+
+    if(currentTab === "comp"){
+      const data = await api(`/api/employee/${encodeURIComponent(username)}/compensation`);
+      const c = data.compensation;
+      renderRows(c, [
+        ["Base Salary", "base_salary"],
+      ]);
+      document.getElementById("note").innerHTML ="";
+      return;
+    }
+
+    if(currentTab === "history"){
+      const data = await api(`/api/employee/${encodeURIComponent(username)}/history`);
+      renderTable(data.history, [
+        {label:"Action", key:"action"},
+        {label:"Details", key:"details"},
+        {label:"Created At", key:"created_at"},
+      ]);
+      return;
+    }
+
+    if(currentTab === "leaves"){
+      const bal = await api(`/api/leave-balance/${encodeURIComponent(username)}`);
+      const leaves = await api(`/api/employee/${encodeURIComponent(username)}/leaves`);
+
+      document.getElementById("note").textContent ="";
+      renderTable(leaves.leaves, [
+        {label:"Start", key:"start_date"},
+        {label:"End", key:"end_date"},
+        {label:"Days", key:"days"},
+        {label:"Reason", key:"reason"},
+        {label:"Status", key:"status"},
+      ]);
+      return;
+    }
+  }
+
+  // Search behavior: type name, then press Enter → jump to first match
+  async function setupSearch(){
+    const input = document.getElementById("search");
+    const employees = await loadEmployeesOnce();
+
+    input.addEventListener("keydown", (e)=>{
+      if(e.key !== "Enter") return;
+      const q = input.value.trim().toLowerCase();
+      if(!q) return;
+
+      const match = employees.find(emp =>
+        (emp.username || "").toLowerCase().includes(q) ||
+        (emp.full_name || "").toLowerCase().includes(q) ||
+        (emp.email || "").toLowerCase().includes(q)
+      );
+
+      if(match){
+        username = match.username;
+        history.replaceState({}, "", `?username=${encodeURIComponent(username)}`);
+        boot();
+      } else {
+        alert("No matching employee found in mock DB.");
+      }
+    });
+  }
+
+  // Tabs click
+  document.querySelectorAll(".tab").forEach(t=>{
+    t.addEventListener("click", ()=> setActiveTab(t.dataset.tab));
+  });
+
+  async function boot(){
+    await loadHeader();
+    await renderTab();
+  }
+
+  setupSearch();
+  boot();
+
+
+</script>
+</body>
+</html>

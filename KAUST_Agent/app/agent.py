@@ -10,6 +10,8 @@ import os
 import sqlite3
 from datetime import date, timedelta
 from typing import List, Optional, TypedDict, Annotated
+from datetime import datetime
+from zoneinfo import ZoneInfo
 
 # from langchain_openai import AzureChatOpenAI
 from langchain_openai import ChatOpenAI
@@ -95,7 +97,7 @@ def build_graph_for(user_id: int):
 
     @tool("GetProfileSummary")
     def get_profile_summary_tool():
-        """Return non-sensitive profile info for the current user."""
+        """Return the current user's profile summary."""
         return get_profile_summary_for(user_id)
 
     # ----- WRITE TOOLS -----
@@ -165,6 +167,14 @@ def build_graph_for(user_id: int):
     def planner_node(state: AgentState):
         """Produce the next assistant message (may include tool calls)."""
         resp = llm_with_tools.invoke(state["messages"])
+        if isinstance(resp, AIMessage) and getattr(resp, "tool_calls", None):
+          if len(resp.tool_calls) > 1:
+                resp = AIMessage(
+                    content=resp.content,
+                    tool_calls=[resp.tool_calls[0]],
+                    additional_kwargs=getattr(resp, "additional_kwargs", None) or {},
+                    response_metadata=getattr(resp, "response_metadata", None) or {},
+                )
 
         # For Logging Tool Chosen By Agent
         if hasattr(resp, "tool_calls") and resp.tool_calls:
@@ -193,6 +203,14 @@ def build_graph_for(user_id: int):
 
 from langsmith import traceable
 
+import re
+
+_ARABIC_RE = re.compile(r"[\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF]")
+
+def detect_lang(text: str) -> str:
+    # If it contains Arabic script, treat it as Arabic; otherwise English
+    return "ar" if _ARABIC_RE.search(text or "") else "en"
+
 
 @traceable(name="agent_respond")
 def agent_respond(text: str, user_id: int, thread_id: Optional[str] = None) -> str:
@@ -203,10 +221,25 @@ def agent_respond(text: str, user_id: int, thread_id: Optional[str] = None) -> s
     # app_graph = build_graph_for(user_id)
     app_graph = build_graph_for(user_id)
 
+    today_riyadh = datetime.now(ZoneInfo("Asia/Riyadh")).date().isoformat()
+
+    lang = detect_lang(text)
+    lang_name = "Arabic" if lang == "ar" else "English"
+
+    system = (
+    SYSTEM_PROMPT
+    + f"\nIMPORTANT: Today is {today_riyadh} in Asia/Riyadh.\n"
+    + "Resolve relative dates like today/tomorrow and Arabic اليوم/بكرة using this date.\n"
+    + f"\nCRITICAL LANGUAGE RULE: The user message is {lang_name}. "
+      f"You MUST reply in {lang_name}. Do not switch languages.\n"
+          )
+
+
     messages: List[BaseMessage] = [
-        SystemMessage(content=SYSTEM_PROMPT),
-        HumanMessage(content=text),
+    SystemMessage(content=system),
+    HumanMessage(content=text),
     ]
+
 
     # Respect the caller's thread_id; fallback to a deterministic default
     thread_key = thread_id or f"user:{user_id}:default"

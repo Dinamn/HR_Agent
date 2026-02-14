@@ -21,6 +21,7 @@ st.set_page_config(
     layout="wide",
     initial_sidebar_state="expanded"
 )
+
 # -------------------------------------------------
 # LOAD LOGO (INLINE SVG)
 # -------------------------------------------------
@@ -120,60 +121,110 @@ def touch_and_title(chat_obj, user_text: str):
         chat_obj["auto_titled"] = True
 
 # -------------------------------------------------
-# SIDEBAR
-# -------------------------------------------------
-st.sidebar.title("Chats")
-
-backend_url = os.getenv("BACKEND_URL", "http://127.0.0.1:8000")
-username = "Dina"
-
-def new_chat():
-    # Create a pending chat (NOT added to sidebar until first message)
-    new_id = str(uuid.uuid4())
-    st.session_state.pending_chat_id = new_id
-    st.session_state.current_chat_id = new_id
-    st.session_state.pending_chat = {
-        "title": "New Chat",
-        "session_id": new_id,
-        "messages": [],
-        "updated_at": time.time(),
-        "auto_titled": False,
-    }
-
-if st.sidebar.button("＋ New chat", use_container_width=True):
-    new_chat()
-    st.rerun()
-
-# ✅ Newest chats on top (by last activity)
-sorted_chats = sorted(
-    st.session_state.chats.items(),
-    key=lambda x: x[1].get("updated_at", 0),
-    reverse=True,
-)
-
-for cid, c in sorted_chats:
-    if st.sidebar.button(c["title"], key=f"chat_{cid}", use_container_width=True):
-        st.session_state.current_chat_id = cid
-        st.rerun()
-    if cid == st.session_state.current_chat_id:
-        st.sidebar.caption(f"session: {c['session_id']}")
-
-# -------------------------------------------------
-# CSS (FULL-WIDTH FIXED HEADER)
+# CSS (STYLE STREAMLIT'S REAL HEADER TO AVOID FLICKER)
 # -------------------------------------------------
 HEADER_H = 92
 st.markdown(
     f"""
 <style>
-header[data-testid="stHeader"] {{
-    display: none;
-}}
+/* ✅ DO NOT hide Streamlit's header anymore (we skin it instead) */
 footer {{
     display: none;
 }}
+
 [data-testid="stAppViewContainer"] {{
     background: #f5f7fa;
 }}
+
+/* ✅ Ensure base app is below the header */
+[data-testid="stAppViewContainer"],
+[data-testid="stApp"] {{
+    position: relative !important;
+    z-index: 0 !important;
+}}
+
+/* ✅ Use Streamlit's header (stable top layer) => no flicker on reruns */
+header[data-testid="stHeader"] {{
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    height: {HEADER_H}px !important;
+    z-index: 2147483647 !important;
+    isolation: isolate !important;
+
+    background-image:
+        linear-gradient(
+            to right,
+            rgba(255,255,255,0.92) 0%,
+            rgba(255,255,255,0.70) 22%,
+            rgba(255,255,255,0.25) 42%,
+            rgba(255,255,255,0.00) 62%
+        ),
+        linear-gradient(135deg, #25C7BC 0%, #602650 45%, #25C7BC 100%);
+
+    background-size: 100% 100%, 320% 320%;
+    background-position: 0 0, 0% 50%;
+    animation: gradientMove 8s ease-in-out infinite;
+
+    box-shadow: 0 8px 22px rgba(0,0,0,0.12) !important;
+}}
+
+/* ✅ Hide Streamlit's built-in header controls visually */
+header[data-testid="stHeader"] > div {{
+    opacity: 0 !important;
+    pointer-events: none !important;
+}}
+
+/* ✅ Inject your logo into the header using CSS (stable) */
+header[data-testid="stHeader"]::before {{
+    content: "" !important;
+    position: absolute !important;
+    left: 28px !important;
+    top: 50% !important;
+    transform: translateY(-50%) !important;
+
+    width: 120px !important;
+    height: 120px !important;
+
+    background-image: url("data:image/svg+xml;base64,{logo_b64}") !important;
+    background-repeat: no-repeat !important;
+    background-size: contain !important;
+}}
+
+/* Keep your animated gradient */
+@keyframes gradientMove {{
+    0%   {{ background-position: 0 0, 0% 50%; }}
+    50%  {{ background-position: 0 0, 100% 50%; }}
+    100% {{ background-position: 0 0, 0% 50%; }}
+}}
+
+/* Push content below the fixed header + control space above pinned input */
+.block-container {{
+    padding-top: {HEADER_H + 18}px;
+    padding-bottom: 90px !important; /* ✅ TUNE THIS to reduce space above input */
+}}
+
+/* Sidebar spacing under header */
+section[data-testid="stSidebar"] {{
+    padding-top: 0px !important;
+    background: #e9edf2 !important;
+    z-index: 1 !important;
+}}
+
+section[data-testid="stSidebar"] > div {{
+    margin-top: {HEADER_H - 30}px !important;
+}}
+
+section[data-testid="stSidebar"] > div:first-child {{
+    padding-top: 30px !important;
+}}
+
+section[data-testid="stSidebar"] button[kind="header"] {{
+    margin-bottom: 4px !important;
+}}
+
+/* Bottom/chat input styling */
 div[data-testid="stBottomBlockContainer"],
 div[data-testid="stBottomBlockContainer"] > div,
 div[data-testid="stBottom"] {{
@@ -181,18 +232,20 @@ div[data-testid="stBottom"] {{
     box-shadow: none !important;
     border-top: none !important;
     height: auto !important;
-    min-height: 60px !important;
+    min-height: 60px !important;   /* ✅ keep this 60 */
     max-height: none !important;
     overflow: visible !important;
 }}
+
 div[data-testid="stChatInput"] {{
     padding-top: 0px !important;
     padding-bottom: 0px !important;
     background: #f5f7fa !important;
     height: auto !important;
     min-height: 60px !important;
-    margin-top: -100px !important;
+    margin-top: 0px !important;
 }}
+
 div[data-testid="stChatInput"] > div {{
     background: #ffffff !important;
     border: 1px solid rgba(0,0,0,0.12) !important;
@@ -208,6 +261,7 @@ div[data-testid="stChatInput"] > div {{
     display: flex !important;
     align-items: stretch !important;
 }}
+
 div[data-testid="stChatInput"] form {{
     background: transparent !important;
     border: none !important;
@@ -217,6 +271,7 @@ div[data-testid="stChatInput"] form {{
     display: flex !important;
     align-items: stretch !important;
 }}
+
 div[data-testid="stChatInput"] form > div,
 div[data-testid="stChatInput"] form > div > div,
 div[data-testid="stChatInput"] [data-baseweb="base-input"],
@@ -232,6 +287,7 @@ div[data-testid="stChatInput"] [data-baseweb="textarea"] > div > div {{
     min-height: 100% !important;
     align-items: stretch !important;
 }}
+
 div[data-testid="stChatInput"] textarea {{
     height: 100% !important;
     min-height: 100% !important;
@@ -247,94 +303,44 @@ div[data-testid="stChatInput"] textarea {{
     overflow-y: auto !important;
     resize: none !important;
 }}
+
 div[data-testid="stChatInput"] > div:focus-within {{
     border-color: rgba(96, 38, 80, 0.75) !important;
     box-shadow: 0 0 0 3px rgba(96, 38, 80, 0.15) !important;
     outline: none !important;
 }}
+
+/* Fix send button vertical alignment */
 div[data-testid="stChatInput"] button {{
-    background: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-    outline: none !important;
+    height: 100% !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    padding: 0 18px !important;
 }}
+
+/* Also fix the button's internal wrapper */
+div[data-testid="stChatInput"] button > div {{
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+}}
+
 div[data-testid="stChatInput"] *:focus,
 div[data-testid="stChatInput"] *:focus-visible {{
     outline: none !important;
     box-shadow: none !important;
 }}
-.tahakom-header {{
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    width: 100vw;
-background-image:
-    linear-gradient(
-        to right,
-        rgba(255,255,255,0.92) 0%,
-        rgba(255,255,255,0.70) 22%,
-        rgba(255,255,255,0.25) 42%,
-        rgba(255,255,255,0.00) 62%
-    ),
-    linear-gradient(135deg, #25C7BC 0%, #602650 45%, #25C7BC 100%);
 
-background-size: 100% 100%, 320% 320%;
-background-position: 0 0, 0% 50%;
-animation: gradientMove 8s ease-in-out infinite;
-
-    height: {HEADER_H}px;
-    padding: 0 28px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    z-index: 999999 !important;
-    box-shadow: 0 8px 22px rgba(0,0,0,0.12);
-}}
-@keyframes gradientMove {{
-    0%   {{ background-position: 0 0, 0% 50%; }}
-    50%  {{ background-position: 0 0, 100% 50%; }}
-    100% {{ background-position: 0 0, 0% 50%; }}
-}}
-.block-container {{
-    padding-top: {HEADER_H + 18}px;
-}}
-section[data-testid="stSidebar"] {{
-    padding-top: 0px !important;
-    background: #e9edf2 !important;
-    z-index: 1 !important; 
-}}
-section[data-testid="stSidebar"] > div {{
-    margin-top: {HEADER_H - 30}px !important;
-}}
-section[data-testid="stSidebar"] > div:first-child {{
-    padding-top: 30px !important;
-}}
-section[data-testid="stSidebar"] button[kind="header"] {{
-    margin-bottom: 4px !important;
-}}
-.tahakom-logo {{
-    width: 130px;
-    height: 130px;
-    background: transparent;
-    border-radius: 14px;
-    padding-top: 5px;
-    padding-bottom: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}}
-.tahakom-logo img {{
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-}}
+/* Greeting animation */
 .greeting {{
     transition: opacity .6s ease, max-height .6s ease, margin-bottom .6s ease;
     overflow: hidden;
 }}
 .greet-visible {{opacity:1; max-height:200px; margin-bottom:0;}}
 .greet-hidden  {{opacity:0; max-height:0; margin-bottom:0;}}
+
+/* Buttons */
 div[data-testid="stButton"] > button {{
     width: 100% !important;
     height: 44px !important;
@@ -356,6 +362,8 @@ div[data-testid="stButton"] > button:focus-visible {{
     outline: none !important;
     box-shadow: none !important;
 }}
+
+/* Chat bubbles */
 .chat-wrap {{
     width: 100%;
     max-width: 1300px;
@@ -394,24 +402,61 @@ div[data-testid="stButton"] > button:focus-visible {{
     border: 1px solid rgba(0,0,0,0.05);
     border-top-right-radius: 8px;
 }}
+
+/* ✅ CHIPS pinned just above the chat input (no st.bottom needed) */
+.chips-wrapper {{
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 78px;          /* ✅ TUNE THIS: distance above the input */
+    z-index: 1000;
+}}
+
+
+
 </style>
 """,
     unsafe_allow_html=True,
 )
 
 # -------------------------------------------------
-# HEADER (FULL WIDTH)
+# SIDEBAR
 # -------------------------------------------------
-st.markdown(
-    f"""
-<div class="tahakom-header">
-  <div class="tahakom-logo">
-    <img src="data:image/svg+xml;base64,{logo_b64}" alt="Tahakom Logo"/>
-  </div>
-</div>
-""",
-    unsafe_allow_html=True,
+st.sidebar.title("Chats")
+
+backend_url = os.getenv("BACKEND_URL", "http://127.0.0.1:8000")
+username = "Dina"
+
+def new_chat():
+    # Create a pending chat (NOT added to sidebar until first message)
+    new_id = str(uuid.uuid4())
+    st.session_state.pending_chat_id = new_id
+    st.session_state.current_chat_id = new_id
+    st.session_state.pending_chat = {
+        "title": "New Chat",
+        "session_id": new_id,
+        "messages": [],
+        "updated_at": time.time(),
+        "auto_titled": False,
+    }
+
+if st.sidebar.button("＋ New chat", use_container_width=True):
+    new_chat()
+    st.rerun()
+
+# ✅ Newest chats on top (by last activity)
+sorted_chats = sorted(
+    st.session_state.chats.items(),
+    key=lambda x: x[1].get("updated_at", 0),
+    reverse=True,
 )
+
+for cid, c in sorted_chats:
+    if st.sidebar.button(c["title"], key=f"chat_{cid}", use_container_width=True):
+        st.session_state.current_chat_id = cid
+        st.rerun()
+    if cid == st.session_state.current_chat_id:
+        st.sidebar.caption(f"session: {c['session_id']}")
 
 # -------------------------------------------------
 # BACKEND CALL
@@ -516,16 +561,16 @@ if st.session_state.pending_user_text is not None:
     st.rerun()
 
 # -------------------------------
-# CHIPS RIGHT ABOVE CHAT INPUT
+# ✅ CHIPS pinned just above chat input (older Streamlit compatible)
 # -------------------------------
-st.markdown('<div style="height:380px;"></div>', unsafe_allow_html=True)
-
 if not user_has_spoken:
     suggestions = [
         "What is my employee ID number?",
         "Can you raise a leave?",
         "How many paid leaves do I have?",
     ]
+
+    st.markdown('<div class="chips-wrapper">', unsafe_allow_html=True)
 
     left, c1, c2, c3, right = st.columns([2, 3, 3, 3, 2], vertical_alignment="center")
 
@@ -543,6 +588,8 @@ if not user_has_spoken:
                 st.session_state.pending_user_text = text
 
                 st.rerun()
+
+    st.markdown("</div>", unsafe_allow_html=True)
 
 # Chat input
 input_text = st.chat_input("Type a message…")
